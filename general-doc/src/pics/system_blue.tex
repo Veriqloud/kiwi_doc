@@ -1,0 +1,64 @@
+%\documentclass[border={5pt, 15pt, 10pt, 5pt}, convert={density=300}]{standalone}
+\documentclass[border={5pt, 15pt, 10pt, 5pt}, convert={density=140}]{standalone}
+
+\usepackage[T1]{fontenc}
+\usepackage[default]{raleway}
+%\usefonttheme[onlymath]{serif}% raleway looks ugly in math; this uses standard serif math font
+
+\usepackage{tikz, xcolor}
+\usetikzlibrary{shapes.geometric, backgrounds, positioning, decorations.markings} 
+\usetikzlibrary{arrows.meta, graphs, shapes.misc} 
+\usetikzlibrary{calc}
+
+\definecolor{vq_background}{RGB}{8,31,77}
+\definecolor{vq_background2}{RGB}{12,47,116}
+\definecolor{vq_background3}{rgb}{0.149,0.388,0.6}
+\definecolor{vq_green}{RGB}{0,235,210}
+\definecolor{vq_green_light}{RGB}{204,251,246}% green with 80% white added
+\definecolor{vq_blue}{RGB}{0,173,234}
+
+\pagecolor{vq_background3}
+
+\begin{document}
+
+
+%\begin{tikzpicture}[background rectangle/.style={fill=vq_background}, show background rectangle]
+\begin{tikzpicture}[color = white]
+
+    \draw[orange, very thick, ->] (5,1.5) -- (5.6,1.5) node[above, midway, white] {\textbf{TX}};
+    \draw[orange, very thick, <-] (5,-1.5) -- (5.6,-1.5) node[below, midway, white] {\textbf{RX}};
+
+    \node (pc) at (0,0) {\textbf{PC}};
+    \node[fill=vq_blue, minimum size = 1.2cm, rounded corners = 0.15cm] (vqc) at (2,0) [align=center] {\textbf{VQ}\\ \textbf{motherboard}};
+    \node (amps) at (4,0) {\textbf{Amps}};
+    \node (oa) at (2,1.5) {\textbf{Optics Alice}};
+    \node (ob) at (2,-1.5) {\textbf{Optics Bob}};
+    \draw[thick, rounded corners = 0.15cm] (-1, -2) rectangle (5, 2);
+    \draw (-1, -1) -- (5,-1);
+    \draw (-1, 1) -- (5,1);
+
+    \node (laser) at (-2, 1.5) {\textbf{Laser}};
+    \node (detector) at (-2, -1.5) {\textbf{Detector}};
+
+    \node (eth) at (-2,0.5) {\textbf{Ethernet}};
+    \node (clk) at (-2,-0.5) {\textbf{Clock}};
+
+
+
+    \node[above] at (2,2) {\textbf{Box}};
+\end{tikzpicture}
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,75 @@
+\documentclass[convert={density=140}]{standalone}
+
+\usepackage[T1]{fontenc}
+\usepackage[default]{raleway}
+\usepackage{hyperref}
+%\usefonttheme[onlymath]{serif}% raleway looks ugly in math; this uses standard serif math font
+
+\usepackage{tikz, xcolor}
+\usetikzlibrary{shapes.geometric, backgrounds, positioning, decorations.markings} 
+\usetikzlibrary{arrows.meta, graphs, shapes.misc} 
+\usetikzlibrary{calc}
+
+\definecolor{vq_background}{RGB}{8,31,77}
+\definecolor{vq_background2}{RGB}{12,47,116}
+\definecolor{vq_background3}{rgb}{0.149,0.388,0.6}
+\definecolor{vq_green}{RGB}{0,235,210}
+\definecolor{vq_green_light}{RGB}{204,251,246}% green with 80% white added
+\definecolor{vq_blue}{RGB}{0,173,234}
+
+\pagecolor{white}
+
+\begin{document}
+
+
+%\begin{tikzpicture}[background rectangle/.style={fill=vq_background}, show background rectangle]
+\begin{tikzpicture}[font = \small]
+    % top
+    \node[align=center] (switch) at (-4,3) {Eth Switch\\Orolia\\White Rabbit};
+    \node[align=center] (clock) at (0,3) {Clock\\ltc6951};
+    \node[align=center] (dac) at (4,3) {DAC\\ad9152};
+    % middle
+    \node[align=center, fill=vq_blue!30] (fpga) at (0,0) {FPGA\\Xilinx Artix\\Ultrascale+\\\href{https://opalkelly.com/products/xem8310/}{XEM8310}}; 
+    \node[align=center] (slow) at (4,0) {Slow\\DAC/ADC};
+    \node[align=center] (pc) at (-4,0) {PC\\i7-12700T\\ASRock\\\href{https://www.asrock.com/MB/Intel/Z690M-ITXax/index.fr.asp#Specification}{Z690M-ITX/ax}};
+    % bottom
+    \node[align=center] (rng) at (-4,-3) {tRNG\\TectroLabs\\\href{https://tectrolabs.com/swiftrng-pro/}{SwiftRNG Pro}};
+    \node[align=center] (jc) at (0,-3) {Jitter Cleaner\\Si5317};
+    \node[align=center] (tdc) at (4,-3) {TDC\\AS6501};
+    \node[align=center] (apd) at (4,-5) {APD\\\href{https://www.aureatechnology.com/en/products/oem-photon-counter.html}{Aurea SPD\_OEM\_NIR}};
+    % connections
+    \draw[->, font=\scriptsize] (switch) -- (clock) node[above, midway]{10MHz + 1PPS};
+    \draw[<->, font=\scriptsize] (pc) -- (fpga) node[above, midway]{PCIe};
+    \draw[->, font=\scriptsize] (rng) -- (pc) node[midway, above, sloped]{USB};
+    \draw[->, font=\scriptsize] (fpga) -- (jc) node[midway, above, sloped]{5MHz};
+    \draw[->, font=\scriptsize] (jc) -- (tdc) node[midway, above]{5MHz};
+    \draw[<->, font=\scriptsize] (fpga) -- (slow) node[midway, above]{SPI};
+    \draw[->, font=\scriptsize] (fpga) -- (dac) node[midway, sloped, above]{JESD205B};
+    \draw[->, font=\scriptsize] (clock) -- (fpga) node[midway, sloped, above]{clk};
+    \draw[->, font=\scriptsize] (clock) -- (dac) node[midway, above]{jesd\_clk};
+    \draw[->, font=\scriptsize] (apd) -- (tdc) node[midway, right]{TTL pulse};
+    \draw[->, font=\scriptsize] (tdc) -- (fpga) node[midway, above, sloped]{time stamp};
+    \draw[<->, font=\scriptsize] (pc) -- (switch) node[midway, above, sloped]{Eth\_cc};
+    \draw[<->, font=\scriptsize] (pc) -- ++(-3,0) node[midway, above]{Eth\_user};
+
+    \begin{scope}[on background layer]
+        \fill[fill=vq_green!20] (jc.south west) rectangle (slow.east|-dac.north);
+    \end{scope}
+
+
+\end{tikzpicture}
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
