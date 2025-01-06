@@ -8,7 +8,7 @@
 	- [PCB board design](electronics/pcb.md)
 	- [FPGA programming](electronics/fpga.md)
 		- [XDMA](electronics/fpga/xdma.md)
-		- [Clock and reset management](electronics/fpga/clock_rst.md)
+		- [Clock and reset](electronics/fpga/clock_rst.md)
 		- [Fast DAC](electronics/fpga/fastdac.md)
 		- [TDC](electronics/fpga/tdc.md)
 		- [DDR4](electronics/fpga/ddr4.md)

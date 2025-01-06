@@ -6,11 +6,11 @@ The FPGA integration module XEM8310-AU25P is a product of opalkelly, using ADM A
 
 This FPGA module will be plugged to the "Bread70" PCB to communicate with all ICs on board. 
 # Vivado project
-The RTL source code and Vivado block design is available on GitHub [kiwi_fpga](https://github.com/Veriqloud/kiwi_fpga.git). Follow the instructions in README to rebuild Vivado project and block design from Tcl script. Then you have fully access to the project and can generate the bitstream for FPGA from your local machine.
+The RTL source code and Vivado block design is available on GitHub [kiwi_fpga](https://github.com/Veriqloud/kiwi_fpga.git). Follow the instructions in README to rebuild Vivado project and block design from Tcl script. Then you have fully access to the project and can generate the bitstream for FPGA on your local machine.
 
 The main blocks in project:
 - XDMA
-- Clock and reset management
+- Clock and reset
 - Fastdac
 - TDC 
 - DDR4
@@ -31,5 +31,5 @@ There are 2 ways to load bitstream to FPGA
 - USB and FrontPanel API
 - JTAG
 
-You can only have access to ILA debug windows in Vivado by JTAG. With this solution, you also can check the Calibration Process of DDR4. I tested severals FPGA modules, some of them pass the Calibration Process smoothly, some doesn't.
+You can only have access to ILA debug windows in Vivado by JTAG. With this solution, you also can check the Calibration Process of DDR4. I tested severals FPGA modules with the same bitstream, some of them pass the Calibration Process smoothly, some don't. 
 
