@@ -1,34 +1,17 @@
-# The QKD System
-## QKD basics
-
-Quantum Key Distribution [ref review] generates a random string for two players Alice and Bob. 
-Physics guarantees that under some assumptions an evesdropper Eve cannot know anything about that string. 
-The security of QKD can be formally proven [ref Tomamichel_2017]. 
-However, any actual implementation of QKD is vulnerable to attacks that exploit imperfections such as information leakage into side channels. 
-Proper security analysis and countermeasures against known attacks are thus also part of a QKD system. 
-
-Even though an actual system is never fully secure, it is important to understand that QKD provides hardware-based security as apposed to computational security. 
-QKD thus perfectly complements classical crypto and post-quantum crypto. 
-
-Standardization is an important and ongoing process for QKD systems. There are the ETSI GS QKD 016 common criteria for prepare and measure QKD modules, among other documents... 
-
-QKD networks can be logically organized in layers. For example in [openqkdnetwork.net](https://openqkdnetwork.net) there is the hosts layer for the application, the key management layer to manage QKD keys, the quantum network layer to control the routing and finally the quantum link layer with the physical devices. In a good design, all layers are fairly independent of one another. The QKD system we present here is the physcial device in the quantum link layer. 
-
-From a user perspective, the performance of a QKD system is measured by its keyrate. It depends on only a few physical parameters. 
-Understanding those simplifies network considerations by a lot. 
-The most important factor is the loss in the fiber. The probability of detection decreases exponentially with the fiber length. 
-The final keyrate is proportional to the repetition rate at Alice and the probability of detection. 
-The second parameter is the qubit error rate: the probability to measure the wrong result at Bob. These errors need to be corrected and the information leakage during both the generation and correction of the errors compensated. This is called privacy amplification and compresses the key. There is a threshold above which no key generation is possible. 
-The third factor are finite size effects, which become dominant for small block sizes. Therefore one has to wait for a reasonably sized block to be completed before obtaining the first key. 
-
-![simple model of the key rate. There is a maximum detector count rate, limiting the keyrate at low losses. There is an exponential decrease at medium loss and finally a drop off due to dark counts, which increase the qber.](pics/key_vs_distance.png)
-
 ## PM-QKD
 
 Prepare and Measure protocol (PM-QKD) includes a QKD transmitter party Alice and a QKD receiver party Bob. Alice prepares and sends quantum states to Bob through a quantum channel. Bob measures the quantum states. The result (after post-processing) is a common final key available to Alice and Bob.
 ![](pics/PM_QKD.jpg)
 
-## Our approach
+## Time bin encoding
+
+![](pics/encoding.png)
+
+Alice uses a continuous wave laser, cuts out two pulses with an amplitude modulator and applies a differential phase to the two pulses. One of four phases is choosen randomly in BB84 fashion. Bob also applies a random phase, interferes the pulses using an umbalanced Mach-Zehnder interferometer and measures them on single-photon detector. More details are provided in the optics section.
+
+For decoy state QKD the amplitude of the double pulse is chosen randomly from a small set. 
+
+## Our technological approach
 
 We try to adopt a modular design. 
 The heart of the system is the VQ Card performing real time digital processing and analog control. 

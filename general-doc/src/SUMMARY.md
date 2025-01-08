@@ -19,3 +19,12 @@
 	- [RNG](electronics/rng.md)
 - [Clocks](clocks.md)
 - [Hardware Testing](hardware-testing.md)
+
+# How-to guides
+
+- [Calibration](calibration.md)
+
+# QKD basics
+
+- [QKD basics](qkd-basics.md)
+
