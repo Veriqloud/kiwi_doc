@@ -1,10 +1,10 @@
 # SPI
 
-To manage spi transfers between master (fpga) and slaves (devices on Bread70), I use AXI Quad Spi IP. 
+To manage spi transfers between master (fpga) and slaves (devices on Bread70), use AXI Quad Spi IP. 
 - Configure IP in standard mode, and choose number of slaves on the same bus
 - spi_inout_mngt.v : used as a buffer between AXI Quad SPI pins and physical pins
 
-Based on the number of devices and their digital characteristics, I have 3 spi bus:
+Based on the number of devices and their digital characteristics, there are 3 spi buses:
 - SPI1: jitter cleaner and tdc
 - SPI2: clockchip, fast dac, slow dac
 - SPI3: slow adc 

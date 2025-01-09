@@ -31,7 +31,7 @@ This procedure is for individual test, on single node
 
 If you want to test new bitstream, it's enough to just reload bitstream, then reboot computer
 ### Clockchip
-- Registers values are generated from Analog Devices Software 
+- Register values are generated from Analog Devices Software 
 - When SPI works, configure clockchip with generated registers. If configure properly, pll is locked, you will get output clocks at expected frequency
 
 Config_Ltc() function will write configuration and read back registers to verify. Run this command to execute this function:
@@ -46,6 +46,20 @@ python main.py party_name --sync_ltc
 After this process, clock outputs are aligned. Check with oscilloscope. 
 Clockchip is always the first device to configure
 ### Fast DAC
+- Register values are calculated based on datasheet
+- Generate double pulse on alice
+
+```
+python main.py alice --sequence dp
+python main.py alice --shift 2 0 0 0 0 0
+python main.py alice --fda_init
+
+```
+- If you want to generate single pulse, just need to update --sequence command. It depends what you wrote to dpram_seq
+```
+python main.py alice --sequence sp
+```
+- Similarly, change the mode, amplitude, shift in --shift command. It depends what you wrote to dpram_rng and rng fifo
 ### Slow DAC
 - Register values are calculated based on datasheet
 - When SPI works, the chip works directly
@@ -81,7 +95,7 @@ python main.py bob --sim_stop_pulse 5 21
 ```
 - APD can be set in continuous mode or gated mode (with gate signal). 
 
-TDC also have continuous mode and gated mode:
+Module tdc also have continuous mode and gated mode:
 - continuous mode: detects all clicks whether APD in continuous mode or gated mode
 - gated mode: detects only clicks inside the software filter. Software filter is defined by 4 parameters: gate0, width0, gate1, width1
 
@@ -100,12 +114,12 @@ python main.py bob --gated_det
 you should get data in histogram_gated.txt. Start with simple test:
 - Generate single pulse from Pulse Generator
 - Set APD in continuous mode
-- Set TDC in continuous mode
+- Set module tdc in continuous mode
 - Start state machine
 - Get detection result
 - Draw the histogram
 
-After going through these steps, you can advance in double pulse, changing APD mode, changing TDC mode, changing click rate,... 
+After going through these steps, you can advance in double pulse, changing APD mode, changing tdc module mode, changing click rate,... 
 ### TTL gate
 The purpose is to generate the gate signal for APD. Duty cycle is large enough to fit 2 peaks (click 0 and click 1). This signal can be delayed (tune+fine) 12,5ns. Run these command to apply settings and generate signal with duty and tune parameters
 ```
