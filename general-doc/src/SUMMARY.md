@@ -17,7 +17,6 @@
 		- [ILA debug](electronics/fpga/ila.md)
 	- [Computer](electronics/computer.md)
 	- [RNG](electronics/rng.md)
-- [Clocks](clocks.md)
 - [Hardware Testing](hardware-testing.md)
 
 # How-to guides

@@ -6,9 +6,9 @@ This documentation describes and explains the Quantum Key Distribution system de
 
 The source code can be found in the following repos
 
-- kiwi_pcb (printed circuit boards)
-- kiwi_fpga (fpga source code)
-- kiwi_hw_control (hardware control software; deployment; monitoring)
+- [kiwi_pcb](https://github.com/Veriqloud/kiwi_pcb) (printed circuit boards)
+- [kiwi_fpga](https://github.com/Veriqloud/kiwi_fpga) (fpga source code)
+- [kiwi_hw_control](https://github.com/Veriqloud/kiwi_hw_control) (hardware control software; deployment; monitoring)
 - node (postprocessing and link-layer control)
 
 
