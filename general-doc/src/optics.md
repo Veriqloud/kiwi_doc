@@ -2,7 +2,7 @@
 
 
 ## Alice
-![](pics/optics_alice.jpg)
+![](pics/optics_alice.png)
 We use an external Laser: [Thorlabs SFL1550P](https://www.thorlabs.com/thorproduct.cfm?partnumber=SFL1550P). Butterfly package, fully controlled by [Laser Driver](https://www.koheron.com/photonics/ctl300e-industrial-laser-controller).
 We have the following components on Alice's box:
 - Amplitude Modulator  [iXblue MXER-LN-10-PD-P-P-FA-FA-30dB](https://www.ixblue.com/photonics-space/intensity-modulators/)
@@ -16,7 +16,7 @@ We have the following components on Alice's box:
 
 
 ## Bob 
-![](pics/optics_bob.jpg)
+![](pics/optics_bob.png)
 We have the following components on Bob's box:
 - Filter from AMS [OZ Optics](https://shop.amstechnologies.com/FF-Fixed-Filters/SW10901) custom band pass; 
     - passband: 1510nm - 1585nm
