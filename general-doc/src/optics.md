@@ -31,6 +31,33 @@ After Polarization Modulator all fibers are polarization maintaining ones [P3-15
 
 For detection, we use an external Avalanche Photo Diode [OEM module by Aurea (standard grade)](https://www.aureatechnology.com/en/products/oem-photon-counter.html) with [datasheet](https://www.aureatechnology.com/images/produits/AUREA_Datasheet_OEM_NIR_2020_A4.pdf).
 
+### Drivers and amplifiers
+- Laser driver: [Koheron CTL300E](https://www.koheron.com/photonics/ctl300e-industrial-laser-controller)
+	- Communication over serial from FPGA.
+	- 6V-33V power.
+
+- Amplifier for Amplitude Modulator: [ZX60-4016E-S+](https://www.minicircuits.com/WebStore/dashboard.html?model=ZX60-4016E-S%2B), [pdf datasheet](https://www.minicircuits.com/pdfs/ZX60-4016E-S+.pdf).
+	- Power: 12V 400mA.
+	- Vamp 0V-0.9V to control the gain.
+	- 21dB gain, 8Vpp output max.
+	- SMA in/out.
+
+- Amplifer for Phase Modulator of Alice: [ZHL-2X-S+](https://www.minicircuits.com/WebStore/dashboard.html?model=ZHL-32A-S%2B), [pdf datasheet](https://www.minicircuits.com/pdfs/ZHL-2-S+.pdf).
+	- Power: 24V 600mA
+	- 20dB gain, 17.8Vpp max
+	- SMA in/out
+
+- Amplifer for Phase Modulator of Bob: [ZHL-32A-S+](https://www.minicircuits.com/WebStore/dashboard.html?model=ZHL-32A-S%2B), [pdf datasheet](https://www.minicircuits.com/pdfs/ZHL-32A+.pdf).
+
+	- Power: 24V 600mA
+	- 25dB gain, 17.8Vpp max
+	- SMA in/out
+
+- Pulse generator: [Highland Technologies J240](https://www.highlandtechnology.com/Product/J240)
+	- Power: 12V
+	- 140ps FWHM pulse, 0V-0.75V pulse amplitude
+	- Adjustable trigger level
+
 
 
 
