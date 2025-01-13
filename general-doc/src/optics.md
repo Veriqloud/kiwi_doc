@@ -42,7 +42,7 @@ For detection, we use an external Avalanche Photo Diode [OEM module by Aurea (st
 	- 21dB gain, 8Vpp output max.
 	- SMA in/out.
 
-- Amplifer for Phase Modulator of Alice: [ZHL-2X-S+](https://www.minicircuits.com/WebStore/dashboard.html?model=ZHL-32A-S%2B), [pdf datasheet](https://www.minicircuits.com/pdfs/ZHL-2-S+.pdf).
+- Amplifer for Phase Modulator of Alice: [ZHL-2X-S+](https://www.minicircuits.com/WebStore/dashboard.html?model=ZHL-2X-S%2B), [pdf datasheet](https://www.minicircuits.com/pdfs/ZHL-2-S+.pdf).
 	- Power: 24V 600mA
 	- 20dB gain, 17.8Vpp max
 	- SMA in/out
