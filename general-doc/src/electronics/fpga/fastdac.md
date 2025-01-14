@@ -7,7 +7,7 @@ We use fast DAC chip AD9152 from Analog Device, converts digital to analog signa
 ![fastdac output](pics/fastdac_output.png)
 
 Kiwi device has qu-bit rate 80MHz, we use time-bin encoded, so it DAC0 in Alice generates double pulse at 80MHz, DAC1 also generates signal for PM at the same rate. 
-We calculated the JESD204B parameters before design the sytem, you can find the parameters in registers we set for the chip. We set:
+We calculated the JESD204B parameters before designing the sytem, you can find the parameters in registers we set for the chip. We set:
 - lane rate 10Gbits/s per lane
 - 4 lanes
 - jesd in mode 4
@@ -95,41 +95,126 @@ fifos_rng: SwiftRro RNG output data rate around 200Mb/s, we read fifo in fpga at
 
 ![fifos rng](pics/fastdac_fifo_rng.png)
 
-There are several MUX, simply choosing different modes for calibration purpose. When running the protocol, turn on all modes to 1
+There are several MUXs, simply choosing different modes for calibration purpose. When running the protocol, turn on all modes to 1
 
 ![select](pics/fastdac_select.png)
 
 You have these 3 functions in software control to send data and write registers in jesd transport layer
 
-```
+```python,hidelines=~
 def Write_Sequence_Dacs(rf_am):
+~    #Write dpram_max_addr port out 
+~    Base_Addr = 0x00030000
+~    Write(Base_Addr + 16, 0x0000a0a0) #sequence64
+~    #Write data to dpram_dac0 and dpram_dac1
+~    Base_seq0 = Base_Addr + 0x1000  #Addr_axi_sequencer + addr_dpram
+~    if (rf_am == 'off_am'):
+~        seq_list = gen_seq.seq_dac0_off(64,0) #dac0_off(cycle_num, shift_pm) # am: off, pm: seq64
+~    if (rf_am == 'off_pm'):
+~        seq_list = gen_seq.seq_dac1_off(2, [-0.95,0.95], 64,0,0) # am: double pulse, pm: 0
+~    elif (rf_am == 'sp'):
+~        # seq_list = gen_seq.seq_dacs_sp_10(64,0,0) # am: single pulse, pm: seq64
+~        seq_list = gen_seq.seq_dacs_sp(2, [-0.95,0.95], 64,0,0) # am: single pulse, pm: seq64
+~    elif (rf_am == 'dp'):
+~        # seq_list = gen_seq.seq_dacs_dp_10(64,0,0) # am: double pulse, pm: seq64
+~        seq_list = gen_seq.seq_dacs_dp(2, [-0.95,0.95], 64,0,0,0) # am: double pulse, pm: seq64
+~
+~    vals = []
+~    for ele in seq_list:
+~        vals.append(int(ele,0))
+~
+~    fd = open("/dev/xdma0_user", 'r+b', buffering=0)
+~    write_to_dev(fd, Base_seq0, 0, vals)
+~    fd.close()
+~    print("Set sequence for drpam_dac0 and dpram_dac1 finished")
+```
+```python,hidelines=~
 def Write_Sequence_Rng():
+~    Base_Addr = 0x00030000
+~    Base_seq0 = 0x00030000 + 0x2000  #Addr_axil_sequencer +   addr_dpram
+~    dpram_max_addr = 8
+~    Write(Base_Addr + 28, hex(dpram_max_addr)) 
+~    list_rng_zero = gen_seq.seq_rng_zero(dpram_max_addr)
+~    
+~    vals = []
+~    for l in list_rng_zero:
+~        vals.append(int(l, 0))
+~    fd = open("/dev/xdma0_user", 'r+b', buffering=0)
+~    write_to_dev(fd, Base_seq0, 0, vals)
+~    fd.close()
+~    print("Initialie fake rng sequence equal 0 ")
+```
+```python,hidelines=~
 def Write_Dac1_Shift(rng_mode, amp0, amp1, amp2, amp3, shift):
+~    Base_Addr = 0x00030000
+~    amp_list = [amp0,amp1,amp2,amp3]
+~    amp_out_list = []
+~    for amp in amp_list:
+~        if (amp >= 0):
+~            amp_hex = round(32767*amp)
+~        elif (amp < 0):
+~            amp_hex = 32768+32768+round(32767*amp)
+~        amp_out_list.append(amp_hex)
+~    shift_hex = hex(shift)
+~    up_offset = 0x4000
+~    shift_hex_up_offset = (int(up_offset)<<16 | shift)
+~    fastdac_amp1_hex = (amp_out_list[1]<<16 | amp_out_list[0])
+~    fastdac_amp2_hex = (amp_out_list[3]<<16 | amp_out_list[2])
+~    Write(Base_Addr + 8, fastdac_amp1_hex)
+~    Write(Base_Addr + 24, fastdac_amp2_hex)
+~    Write(Base_Addr + 4, shift_hex_up_offset)
+~
+~    #Write bit0 of slv_reg5 to choose RNG mode
+~    #1: Real rng from usb | 0: rng read from dpram
+~    #Write bit1 of slv_reg5 to choose dac1_sequence mode
+~    #1: random amplitude mode | 0: fix sequence mode
+~    #Write bit2 of slv_reg5 to choose feedback mode
+~    #1: feedback on | 0: feedback off
+~    #----------------------------------------------
+~    #Write slv_reg5:
+~    #0x0: Fix sequence for dac1, input to dpram
+~    #0x02: Random amplitude, with fake rng
+~    #0x03: Random amplitude, with true rng
+~    #0x06: Random amplitude, with fake rng, feedback on
+~    #0x07: Random amplitude, with true rng, feedback on
+~    Write(Base_Addr + 20, hex(rng_mode))
+~    #Trigger for switching domain
+~    Write(Base_Addr + 12,0x1)
+~    Write(Base_Addr + 12,0x0)
+~
+~#Read back the FGPA registers configured for JESD
+~def ReadFPGA():
+~    file = open("registers/fda/FastdacFPGAstats.txt","r")
+~    for l in file.readlines():
+~        addr, val = l.split(',')
+~        ad_fpga_addr = str(hex((int(addr,base=16) + 0x10000)))
+~        readout = Read(ad_fpga_addr)
+~        #print(readout)
+~    file.close()
 ```
 
 ### Jesd
 Our developper replaces AMD JESD204 IP by jesd204b_tx_wrapper.v so you don't need to pay AMD for JESD204 IP.However, this module supports only jesd204b protocol in mode 4 and mode 10.
 This function in software control sets all registers for jesd204b_tx_wrapper.v
-```
+```python,hidelines=~
 def WriteFPGA():
-    file = open("registers/fda/FastdacFPGA_204b.txt","r")
-    for l in file.readlines():
-        addr, val = l.split(',')
-        ad_fpga_addr = str(hex((int(addr,base=16) + 0x10000)))
-        Write(ad_fpga_addr, val)
-        #print(ad_fpga_addr)
-        #print(val)
-    print("Set JESD configuration for FPGA finished")
-    file.close()
+~    file = open("registers/fda/FastdacFPGA_204b.txt","r")
+~    for l in file.readlines():
+~        addr, val = l.split(',')
+~        ad_fpga_addr = str(hex((int(addr,base=16) + 0x10000)))
+~        Write(ad_fpga_addr, val)
+~        #print(ad_fpga_addr)
+~        #print(val)
+~    print("Set JESD configuration for FPGA finished")
+~    file.close()
 ```
 
-Read [Jesd204b overview](https://github.com/Veriqloud/kiwi_fpga/blob/master/ABC/srcs/jesd204B_fav/VERILOG_JESD204B/Jesd%20204%20overview.doc) written by our developper
+Read [Jesd204b overview](Jesd204_overview.pdf) written by our developper
 
 ### Jesd phy
 Physical layer, where the stream of data from jesd is mapped to 4 physical GT lanes. This IP is provided by AMD. 
 
 ## Process to run scripts
-
 
 ```
 python main.py party_name --sequence arg0
@@ -171,7 +256,9 @@ rng_mode|description                                                |usecase
 - Reset jesd module
 - Set all registers for receiver ad9152
 - Read back some registers of receiver for monitoring  
--0x084 & 0x281: dac pll and serdes pll locked status
--0x302: dyn_link_latency, should be 0. Otherwise, run again the fda_init
--0x470 to 0x473: all should be 0x0f, indicates all layers of jesd204b protocol is established
+    0x084 & 0x281: dac pll and serdes pll locked status
+
+    0x302: dyn_link_latency, should be 0. Otherwise, run again the fda_init
+    
+    0x470 to 0x473: all should be 0x0f, indicates all layers of jesd204b protocol is established
 

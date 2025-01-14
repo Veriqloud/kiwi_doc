@@ -64,6 +64,7 @@ These 3 functions allow you to write and read to all devices on spi1 and spi2
 1. Init_spi(base, offset, spi_mode): configure AXI quad spi 
 - base and offset of axil address: defined in address table of fpga
 - spi_mode: {0,1,2,3}, depends on the devices
+
 1. Set_reg(spi_bus, device, args): write to devices
 1. Get_reg(spi_bus, device, expect, args): read from devices
 - spi_bus: {1,2}, corresponding to spi1 and spi2

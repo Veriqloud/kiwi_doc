@@ -43,41 +43,41 @@ Picture below shows an overview how data flows through modules and xdma channels
 ![tdc data flow](pics/tdc_data_flow.png)
 ### Software control functions
 Setting registers used in state machine under clk200
-```
+```python,hidelines=~
 def Time_Calib_Reg(command,t0, gc_back, gate0, width0, gate1, width1):
-    BaseAddr = 0x00000000
-    Write(BaseAddr + 16,hex(int(width0<<24 | gate0))) #gate0
-    Write(BaseAddr + 20,hex(int(width1<<24 | gate1))) #gate1
-    Write(BaseAddr + 24,hex(int(t0))) #shift tdc time = 0
-    Write(BaseAddr + 28,hex(int(gc_back))) #shift gc back = 0
-    Write(BaseAddr + 32,hex(int(command))) #command = 1: raw | =2: with gate
-    Write(BaseAddr + 36,0x0)
-    Write(BaseAddr + 36,0x2)# turn bit[1] to high to enable register setting
+~    BaseAddr = 0x00000000
+~    Write(BaseAddr + 16,hex(int(width0<<24 | gate0))) #gate0
+~    Write(BaseAddr + 20,hex(int(width1<<24 | gate1))) #gate1
+~    Write(BaseAddr + 24,hex(int(t0))) #shift tdc time = 0
+~    Write(BaseAddr + 28,hex(int(gc_back))) #shift gc back = 0
+~    Write(BaseAddr + 32,hex(int(command))) #command = 1: raw | =2: with gate
+~    Write(BaseAddr + 36,0x0)
+~    Write(BaseAddr + 36,0x2)# turn bit[1] to high to enable register setting
 ```
 Initialize tdc module, global counter in tdc module is local, it means it's available in Bob only for calibration purpose. There are 2 state machines in tdc module:
 
 - state machine under lclk_i: Config_Tdc() sets registers and enable this state machine, output digital data in FPGA 
 - state machine under clk200: Reset_gc() and Start_gc() send command to reset and start global counter
 
-```
+```python,hidelines=~
 def Time_Calib_Init():
-    Config_Tdc() #Get digital data from TDC chip
-    Reset_gc() #Reset global counter
-    Start_gc() #Global counter start counting at the next PPS
+~    Config_Tdc() #Get digital data from TDC chip
+~    Reset_gc() #Reset global counter
+~    Start_gc() #Global counter start counting at the next PPS
 ```
 Get detection result, function Get_Stream() includes reset fifo_gc_tdc and read data from xdma0_c2h_*.
-```
+```python,hidelines=~
 def Cont_Det(): 
-    num_data = 2000
-    Get_Stream(0x00000000+40,'/dev/xdma0_c2h_2','data/tdc/output_dp.bin',num_data)
-    command ="test_tdc/tdc_bin2txt data/tdc/output_dp.bin data/tdc/histogram_dp.txt"
-    s = subprocess.check_call(command, shell = True)
-
-    time_gc = np.loadtxt("data/tdc/histogram_dp.txt",usecols=(1,2),unpack=True)
-    int_time_gc = time_gc.astype(np.int64)
-    duration = (max(int_time_gc[1])-min(int_time_gc[1]))*25
-    click_rate = np.around(num_data/(duration*0.000000001),decimals=4)
-    print("Number of count: ", str(len(int_time_gc[1])))
-    print("Appro click rate: ", str(click_rate), "click/s")
+~    num_data = 2000
+~    Get_Stream(0x00000000+40,'/dev/xdma0_c2h_2','data/tdc/output_dp.bin',num_data)
+~    command ="test_tdc/tdc_bin2txt data/tdc/output_dp.bin data/tdc/histogram_dp.txt"
+~    s = subprocess.check_call(command, shell = True)
+~
+~    time_gc = np.loadtxt("data/tdc/histogram_dp.txt",usecols=(1,2),unpack=True)
+~    int_time_gc = time_gc.astype(np.int64)
+~    duration = (max(int_time_gc[1])-min(int_time_gc[1]))*25
+~    click_rate = np.around(num_data/(duration*0.000000001),decimals=4)
+~    print("Number of count: ", str(len(int_time_gc[1])))
+~    print("Appro click rate: ", str(click_rate), "click/s")
 
 ```

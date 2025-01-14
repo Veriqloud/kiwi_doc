@@ -29,37 +29,37 @@ Purpose of this module:
 - Output will be fed into fine delay
 
 These are the base functions allow to set registers, generate signal, change duty cycle and tune delay  
-```
+```python,hidelines=~
 def ttl_reset():
-    Write(0x0001200c,0x01)
-    Write(0x0001200c,0x00)
-    time.sleep(2)
+~    Write(0x0001200c,0x01)
+~    Write(0x0001200c,0x00)
+~    time.sleep(2)
 ```
-```
+```python,hidelines=~
 def calculate_delay(duty, tune, fine, inc):
-    fine_clock_num = fine*16
-    transfer = duty<<19|tune<<15|fine_clock_num<<1|inc
-    transfer_bin = bin(transfer)
-    transfer_hex = hex(transfer)
-    return transfer_hex
+~    fine_clock_num = fine*16
+~    transfer = duty<<19|tune<<15|fine_clock_num<<1|inc
+~    transfer_bin = bin(transfer)
+~    transfer_hex = hex(transfer)
+~    return transfer_hex
 ```
-```
+```python,hidelines=~
 def write_delay_master(duty, tune, fine, inc):
-    Base_Add = 0x00015004 
-    transfer = calculate_delay(duty, tune, fine, inc)
-    Write(Base_Add,transfer)
+~    Base_Add = 0x00015004 
+~    transfer = calculate_delay(duty, tune, fine, inc)
+~    Write(Base_Add,transfer)
 ```
-```
+```python,hidelines=~
 def write_delay_slaves(fine1, inc1, fine2, inc2):
-    Base_Add = 0x0001500c
-    transfer = (fine2*16)<<17|inc2<<16|(fine1*16)<<1|inc1
-    Write(Base_Add, hex(transfer))
+~    Base_Add = 0x0001500c
+~    transfer = (fine2*16)<<17|inc2<<16|(fine1*16)<<1|inc1
+~    Write(Base_Add, hex(transfer))
 ```
-```
+```python,hidelines=~
 def params_en():
-    Base_Add = 0x0015008
-    Write(Base_Add,0x00)
-    Write(Base_Add,0x01)
+~    Base_Add = 0x0015008
+~    Write(Base_Add,0x00)
+~    Write(Base_Add,0x01)
 ```
 
 ## Fine delay
@@ -71,30 +71,30 @@ Tune delay step is around 4,16ns. So, I choose Cascade configuration for ODELAYE
 - UPDATE_MODE = ASYNC
 
 Trigger the fine delay on master and 2 slaves, every trigger will shift your signal fine [taps] set in write_delay_* function
-```
+```python,hidelines=~
 def trigger_fine_master():
-    Base_Add = 0x00015000
-    Write(Base_Add, 0x0)
-    Write(Base_Add, 0x1)
-    time.sleep(0.02)
-    Write(Base_Add, 0x0)
-    print("Trigger master done")
+~    Base_Add = 0x00015000
+~    Write(Base_Add, 0x0)
+~    Write(Base_Add, 0x1)
+~    time.sleep(0.02)
+~    Write(Base_Add, 0x0)
+~    print("Trigger master done")
 ```
-```
+```python,hidelines=~
 def trigger_fine_slv1():
-    Base_Add = 0x00015000
-    Write(Base_Add + 16, 0x0)
-    Write(Base_Add + 16, 0x1)
-    time.sleep(0.02)
-    Write(Base_Add + 16, 0x0)
-    print("Trigger slave1 done")
+~    Base_Add = 0x00015000
+~    Write(Base_Add + 16, 0x0)
+~    Write(Base_Add + 16, 0x1)
+~    time.sleep(0.02)
+~    Write(Base_Add + 16, 0x0)
+~    print("Trigger slave1 done")
 ```
-```
+```python,hidelines=~
 def trigger_fine_slv2():
-    Base_Add = 0x00015000
-    Write(Base_Add + 20, 0x0)
-    Write(Base_Add + 20, 0x1)
-    time.sleep(0.02)
-    Write(Base_Add + 20, 0x0)
-    print("Trigger slave2 done")
+~    Base_Add = 0x00015000
+~    Write(Base_Add + 20, 0x0)
+~    Write(Base_Add + 20, 0x1)
+~    time.sleep(0.02)
+~    Write(Base_Add + 20, 0x0)
+~    print("Trigger slave2 done")
 ```
