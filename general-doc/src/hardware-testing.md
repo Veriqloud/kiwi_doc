@@ -13,6 +13,10 @@ Just some guidelines for hardware testing.
 - soldering lab
 - optical fibers and attenuators
 
+## Build the hardware boxes
+
+Some pictures for instructions
+
 ## Electronics testing
 This procedure is for individual test, on single node
 1. Prepare XEM8310 (written in FPGA programming Chapter)
@@ -137,6 +141,8 @@ python main.py debug --add_delay_s2
 
 ### DDR4	
 
+## Physics experiments
+After passing the electronics tests, you can connect electrical signals to optical components and do some experiments
 
 
 

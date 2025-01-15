@@ -15,7 +15,7 @@ We calculated the JESD204B parameters before designing the sytem, you can find t
 - refclk 200MHz
 - sysref clk 3.125MHz 
 
-Read [JESD204 Survival](https://www.analog.com/media/en/technical-documentation/technical-articles/JESD204B-Survival-Guide.pdf) Guide and [datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/AD9152.pdf) of AD9152 to understand protocol. Read chapter JESD204B Setup in AD9152 datasheet to calculate lane rate.
+Read [JESD204 Survival Guide](https://www.analog.com/media/en/technical-documentation/technical-articles/JESD204B-Survival-Guide.pdf) and [AD9152 datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/AD9152.pdf) to understand protocol. Read chapter JESD204B Setup in AD9152 datasheet to calculate lane rate.
 
 ## Receiver AD9152
 - refclk and sysref comes from clock chip ltc9152
@@ -42,7 +42,7 @@ Generate data to provide for Jesd. There are 2 DACs inside AD9152, so DAC0 in ch
 
 ![pulses](pics/fastdac_pulse.png)
 #### Signal for AM   
-- qbit is encoded in 5 ns double pulse, pulse rate is 80MHz (12,5ns). Pulse Generator(PG) triggers the rising edge of the DAC0 signal to generate the pulse, so make sure distance between 2 rising edge is 5ns +- 200ps. You can play around with Pulse Generator threshold and DAC0 signal to find the best position for PG trigger 
+- qbit is encoded in 5 ns double pulse, pulse rate is 80MHz (12,5ns). Pulse Generator(PG) triggers the rising edge of the DAC0 signal to generate the pulses, so make sure distance between 2 rising edge is 5ns +- 200ps. You can play around with Pulse Generator threshold and DAC0 signal to find the best position for PG trigger 
 #### Signal for PM 
 - Amplitude of DAC1 signal defines the phase difference applied to 2 bins from 0 to 2\\(\pi\\). Depends on power of the PM amplifier, you can reach higher amplitude. Two peaks of PM signal for 1 qubit is symetrique. 
 - With BB84 protocol, the phase is random, there are 4 phase possibilities. Which means 1 double pulse requires 2 bits of rng, rng data rate = 80M* 2 = 160Mbits/s

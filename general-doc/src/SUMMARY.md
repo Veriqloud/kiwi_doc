@@ -3,6 +3,8 @@
 [Introduction](introduction.md)
 
 - [The QKD System](qkt-system.md)
+# Developper Guide
+
 - [Optics](optics.md)
 - [Electronics](electronics.md)
 	- [PCB board design](electronics/pcb.md)
@@ -15,13 +17,12 @@
 		- [TTL gate](electronics/fpga/ttl.md)
 		- [SPI](electronics/fpga/spi.md)
 		- [ILA debug](electronics/fpga/ila.md)
-	- [Computer](electronics/computer.md)
-	- [RNG](electronics/rng.md)
+	- [WRS, Computer, tRNG](electronics/wrs_pc_rng.md)
 - [Hardware Testing](hardware-testing.md)
-
-# How-to guides
-
 - [Calibration](calibration.md)
+
+# User Guide
+
 
 # QKD basics
 
