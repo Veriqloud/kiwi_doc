@@ -6,7 +6,7 @@ We use fast DAC chip AD9152 from Analog Device, converts digital to analog signa
 
 ![fastdac output](pics/fastdac_output.png)
 
-Kiwi device has qu-bit rate 80MHz, we use time-bin encoded, so it DAC0 in Alice generates double pulse at 80MHz, DAC1 also generates signal for PM at the same rate. 
+Kiwi device has qu-bit rate 80MHz, we use time-bin encoded, so DAC0 in Alice generates double pulse at 80MHz, DAC1 also generates signal for PM at the same rate. 
 We calculated the JESD204B parameters before designing the sytem, you can find the parameters in registers we set for the chip. We set:
 - lane rate 10Gbits/s per lane
 - 4 lanes

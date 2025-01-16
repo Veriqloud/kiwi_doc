@@ -50,10 +50,10 @@ cs_ad     |ext_dac_ltc_ss[0]  D9  | chip select for fast dac
 ```
 Board pins| FPGA pin name         | Notes|
 ----------+---------------------- +------+
-a.sclk    |ext_adc_sclk   D14 | 16MHz from ?
-a.mosi    |ext_adc_mosi   A13 | sdi,  data from fpga to device
-a.miso    |ext_adc_miso   A12 | sdo, data from device to fpga 
-a.cs      |ext_adc_ss     C13 | chip select for slow adc
+a.sclk    |ext_adc_sclk   D14 	  | 16MHz from ?
+a.mosi    |ext_adc_mosi   A13     | sdi,  data from fpga to device
+a.miso    |ext_adc_miso   A12 	  | sdo, data from device to fpga 
+a.cs      |ext_adc_ss     C13 	  | chip select for slow adc
 ```
 - Pull chip select bit to 1 to disable the device.
 

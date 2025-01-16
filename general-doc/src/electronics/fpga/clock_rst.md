@@ -23,17 +23,17 @@ Purpose of this module:
 Axilite registers:
 
 |signal		      |register name                  			|axil register| offset address (dec) |
-|-----------------|-----------------------------------------|-------------|---------|
-|clockchip_sync 			|clockchip_sync_o				|slv_reg0[0]|0
-|fpga_turnkey_fastdac_rst   |fpga_turnkey_fastdac_rst_o		|slv_reg0[1]|0
-|tdc_rst   					|tdc_rst_o						|slv_reg1[0]|4
-|gc_rst						|gc_rst_o						|slv_reg2[0]|8
-|ttl_rst					|ttl_rst_o						|slv_reg3[0]|12
-|lrst_i						|lrst_o	 						|slv_reg1[1]|4
-|ddr_data_rst				|ddr_data_rst_o					|slv_reg4[0]|16
+|-------------------------|------------------------------|-------------|---------|
+|clockchip_sync 			  |clockchip_sync_o				   |slv_reg0[0]|0
+|fpga_turnkey_fastdac_rst |fpga_turnkey_fastdac_rst_o		|slv_reg0[1]|0
+|tdc_rst   					  |tdc_rst_o						   |slv_reg1[0]|4
+|gc_rst						  |gc_rst_o						      |slv_reg2[0]|8
+|ttl_rst					     |ttl_rst_o						   |slv_reg3[0]|12
+|lrst_i						  |lrst_o	 						   |slv_reg1[1]|4
+|ddr_data_rst             |ddr_data_rst_o					   |slv_reg4[0]|16
 
 Generate SYNC signal for clockchip: after receiving command from OS through clockchip_sync, detect rising edge of PPS and start counting to generate a 2ms pulse for clockchip (minimum is 1ms)
-```   
+```  
 reg sync_ltc_o;
 reg [2:0] clockchip_sync_r;
 reg [15:0] counter_clk;

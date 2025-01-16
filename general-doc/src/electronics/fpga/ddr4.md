@@ -47,7 +47,7 @@ Address of slv_reg(n) = 0x0000_1000 + 4 * n
 ## Data flow
 
 Logic behind: 
-1. Alice send START command to Alice FPGA and Bob(through Ethernet) -> Bob FPGA, make sure the START is aligned to PPS, syncronise Alice and Bob
+1. Alice send START command to Alice FPGA and Bob(through Ethernet) -> Bob FPGA, make sure the START is aligned to PPS, synchronise Alice and Bob
 2. Start to write angles to DDR4, and count up double global counter
 3. Bob gets detection result, sends gc (dq_gc and q_pos) and click result to Bob OS
 4. Send gc to Bob FPGA, Bob also send gc to Alice (through Ethernet), Alice sends gc to Alice FPGA

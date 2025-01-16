@@ -19,7 +19,7 @@ This is an overview of physical hardware. There are 2 groups of components:
 ## Device driver and Control API
 To complete the PHY layer, it requires a software layer to control the physical hardware. It includes:
 - Device driver: this is the low-level software handles PCIe communication (using XDMA) between PC and FPGA. It operates at OS kernel level and written by Xilinx
-- Control API: this is the high-level software runs at user level to configure, control FPGA via the device driver. User sends commands, data to FPGA on from this API
+- Control API: this is the high-level software runs at user level to configure, control FPGA via the device driver. User sends commands, data to FPGA from this API
  
 Instructions to install the driver and source code of Control API is available in [kiwi_hw_control](https://github.com/Veriqloud/kiwi_hw_control/tree/master) github repos
 
