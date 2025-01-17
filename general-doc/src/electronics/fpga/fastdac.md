@@ -62,6 +62,7 @@ From the Axil address distribution table, module target jesd_transport takes 64K
 |0x0003_2000   |0X0004_0000  |57344| Data for dpram_rng
 
 Tables of Registers for parameters, base is 0x0003_0000
+
 Address of slv_reg(n) = 0x0003_0000 + 4 * n
 
 |Slave_reg      | Reg name                        | Description

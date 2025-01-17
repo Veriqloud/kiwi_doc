@@ -46,14 +46,25 @@ Address of slv_reg(n) = 0x0000_1000 + 4 * n
 
 ## Data flow
 
-Logic behind: 
-1. Alice send START command to Alice FPGA and Bob(through Ethernet) -> Bob FPGA, make sure the START is aligned to PPS, synchronise Alice and Bob
-2. Start to write angles to DDR4, and count up double global counter
-3. Bob gets detection result, sends gc (dq_gc and q_pos) and click result to Bob OS
-4. Send gc to Bob FPGA, Bob also send gc to Alice (through Ethernet), Alice sends gc to Alice FPGA
-5. Each party after receiving gc, start reading angles from DDR4 based on values of gc and fiber delays value. Make sure fifo_gc_in is not full and DDR4 is not full, by defining fifo_gc_in reading speed higher than click rate, define depth of Virtuall FIFO large enough 
-6. Start saving angles to fifo_alpha_out 
-7. Read angles before fifo_alpha_out is full
+#### START 
+Alice sends START command to Bob through Ethernet. They both send the command to their FPGA, the START state will happen at next PPS and synchronise. Network latency has to be small enough, START command on Alice should not be close to the edge of PPS
+
+![](waves/ddr4_start.png)
+
+#### WRITE MANAGEMENT
+In START state, start to count up double global counter and write angles to DDR4. Angles are written as axistream data to AXI Virtual FIFO controller IP. This IP manages the memory map in the MIG, when you want to write or read from DDR4, you just need to manage write/read axistream of AXI Virtual FIFO controller
+
+#### GC PATH
+Bob FPGA gets detection result, sends gc (dq_gc and q_pos) and click result to Bob OS. Bob then send gc to Alice (through Ethernet). They sends gc to their FPGA 
+
+#### READ DDR4 MANAGEMENT
+When FPGA of each party receives gc, start reading angles from DDR4 based on values of gc and fiber delays value. Make sure fifo_gc_in is not full and AXI Virtual FIFO Controller is not full, by defining fifo_gc_in reading speed higher than click rate, define depth of Virtual FIFO large enough 
+
+#### SAVE ANGLES
+Start saving the angles read from DDR4 to fifo_alpha_out. Choose a moment(value of gc) to start saving, consider the fiber delay between parties. 
+Each party have to read angles before fifo_alpha_out is full.
+
+This is the picture describes the states in FPGA, the path of data between Alice and Bob.
 
 ![ddr4 data flow](pics/ddr4_data_flow.png)
 

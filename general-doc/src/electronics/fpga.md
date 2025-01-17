@@ -1,5 +1,5 @@
 # FPGA module introduction
-The FPGA integration module XEM8310-AU25P is a product of opalkelly, using ADM Artix UltraScale+ FPGA. All information about XEM8310 is available on [Documentation portal](https://docs.opalkelly.com/xem8310/introduction/) of opalkelly. From website you can also download:
+The FPGA integration module XEM8310-AU25P is a product of opalkelly, using AMD Artix UltraScale+ FPGA. All information about XEM8310 is available on [Documentation portal](https://docs.opalkelly.com/xem8310/introduction/) of opalkelly. From website you can also download:
 - FrontPanel to setting devices, loading bitstream, flash,...
 - Vivado board file
 - Pins list

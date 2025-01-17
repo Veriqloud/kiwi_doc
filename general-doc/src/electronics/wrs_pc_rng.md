@@ -1,5 +1,7 @@
 # WRS, Computer, tRNG
 ## WRS
+- Version [White Rabbit Switch v3.4](https://safran-navigation-timing.com/product/white-rabbit-switch-v3-4/)
+- Port connections : ??? 
 
 ## Customized computer
 Customized computer from [Sedatech](https://www.sedatech.net/)

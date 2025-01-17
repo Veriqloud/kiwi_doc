@@ -1,0 +1,9 @@
+{signal: [
+  {name: 'A_PPS', wave: '0......1|..0.....'},
+  {name: 'B_PPS', wave: '0......1|..0.....'},
+  {name: 'A_start_write_ddr', wave: '01|..............'},
+  {name: 'A_state', wave: '3.4.....5|.......', data: ['WAIT','DETECT_PPS','START']},
+  {name: 'B_start_write_ddr', wave: '0..1|............'},
+  {name: 'B_state', wave: '3...4...5|.......', data: ['WAIT','DETECT_PPS','START']},
+
+]}
