@@ -47,7 +47,9 @@ Address of slv_reg(n) = 0x0000_1000 + 4 * n
 ## Data flow
 
 #### START 
-Alice sends START command to Bob through Ethernet. They both send the command to their FPGA, the START state will happen at next PPS and synchronise. Network latency has to be small enough, START command on Alice should not be close to the edge of PPS
+Alice sends START command to Bob through Ethernet. They both send the command to their FPGA, the START state will happen at next PPS and synchronise. Network latency has to be small enough, START command on Alice should not be close to the rising edge of PPS.
+
+To make sure START command is not close to rising edge of PPS, Alice will request PPS detection from FPGA, she delays at least 10ms (PPS duty cycle) and send START command. Readback global counter on both Alice and Bob, compare to verify the synchronisation
 
 ![](waves/ddr4_start.png)
 
@@ -55,7 +57,7 @@ Alice sends START command to Bob through Ethernet. They both send the command to
 In START state, start to count up double global counter and write angles to DDR4. Angles are written as axistream data to AXI Virtual FIFO controller IP. This IP manages the memory map in the MIG, when you want to write or read from DDR4, you just need to manage write/read axistream of AXI Virtual FIFO controller
 
 #### GC PATH
-Bob FPGA gets detection result, sends gc (dq_gc and q_pos) and click result to Bob OS. Bob then send gc to Alice (through Ethernet). They sends gc to their FPGA 
+Bob FPGA gets detection result, sends gc (dq_gc and q_pos) and click result to Bob OS, only output when gc higher than fiber_delay. Bob then send gc to Alice (through Ethernet). They sends gc to their FPGA 
 
 #### READ DDR4 MANAGEMENT
 When FPGA of each party receives gc, start reading angles from DDR4 based on values of gc and fiber delays value. Make sure fifo_gc_in is not full and AXI Virtual FIFO Controller is not full, by defining fifo_gc_in reading speed higher than click rate, define depth of Virtual FIFO large enough 
