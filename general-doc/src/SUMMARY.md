@@ -23,6 +23,7 @@
 
 # User Guide
 
+- [Files and Scripts](files_and_scripts.md)
 
 # QKD basics
 
