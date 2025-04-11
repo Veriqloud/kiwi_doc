@@ -1,6 +1,20 @@
 # Files and Scripts
 
 
+Files and meanings
+
+| name                                        | meaning                                                               | type                           |
+| ----                                        | ----                                                                  | ----                           |
+| /dev/xdma0_user                             | FPGA registers for control and monitoring                             | memory map                     |
+| /dev/xdma0_c2h_0                            | global counter (qubit identifier) and click result of detected qubit  | FPGA to OS stream 128bit/word  |
+| /dev/xdma0_h2c_0                            | global counter of detected qubit                                      | OS to FPGA stream 128bit/word  |
+| /dev/xdma0_h2c_1                            | RNG values                                                            | OS to FPGA stream 128bit/word  |
+| /dev/xdma0_c2h_2                            | TDC timestamps, global counter, click result for calibration          | FPGA to OS stream 128bit/word  |
+| /dev/xdma0_c2h_3                            | angles (rng values of detected qubits)                                | FPGA to OS stream 128bit/word  |
+| /home/vq-user/qline/hw-control/startstop.s  | start and stop the raw key generation                                 | unix stream                    |
+
+
+
 Explanation of the config file `config/tmp.txt`.
 
 
@@ -32,4 +46,9 @@ Explanation of the config file `config/tmp.txt`.
 | gate_delayX      | [0,404)        | internal values for gate_delay                                                   | Bob      |
 | t0               | [0,100]        | detection time offset in units of 20ps (to fine align the gates)                 | Bob      |
 | polX             | [0,5]          | voltage to the 4 axis polarization controller                                    | Bob      |
+
+
+
+
+
 
