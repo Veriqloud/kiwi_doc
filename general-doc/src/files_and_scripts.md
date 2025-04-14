@@ -17,13 +17,14 @@
 
 ## Programs and control scripts
 
-| name                                        | meaning                                                                                                                                      |
-| ----                                        | ----                                                                                                                                         |
-| `client_ctl.py` (Alice); `server_ctl.py` (Bob)  | hardware init, physical settings, calibration and simple monitoring                                                                          |
+| name                                            | meaning                                                                                                                                      |
+| ----                                            | ----                                                                                                                                         |
+| `main_Alice.py`; `main_Bob.py`                  | manually change hardware settings individually on Alice and Bob (see help message of the sript)                                              |
+| `client_ctl.py` (Alice); `server_ctl.py` (Bob)  | hardware init procedures controlled by Alice                                                                                                 |
 | `gc_client` (Alice); `gc_server` (Bob)          | background process to send gc from Bob to Alice and start/stop raw key generation; gc_client is waiting for start/stop from another program  |
-| `qber_client` (Alice); `qber_server` (Bob)          | calculate qber (for calibration only)  |
-| `node`                                        | send start/stop to gc_client; process raw key to final key (qber estimation, error correction, privacy amplification)                        |
-| `kms`                                         | key management service; takes key from `node`                                                                                                                       |
+| `qber_client` (Alice); `qber_server` (Bob)      | calculate qber (for calibration only)                                                                                                        |
+| `node`                                          | send start/stop to gc_client; process raw key to final key (qber estimation, error correction, privacy amplification)                        |
+| `kms`                                           | key management service; takes key from `node`                                                                                                |
 
 ## Config files
 
