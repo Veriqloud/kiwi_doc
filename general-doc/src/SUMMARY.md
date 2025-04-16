@@ -15,6 +15,7 @@
 		- [TDC](electronics/fpga/tdc.md)
 		- [DDR4](electronics/fpga/ddr4.md)
 		- [TTL gate](electronics/fpga/ttl.md)
+		- [Decoy signal](electronics/fpga/decoy.md)
 		- [SPI](electronics/fpga/spi.md)
 		- [ILA debug](electronics/fpga/ila.md)
 	- [WRS, Computer, tRNG](electronics/wrs_pc_rng.md)
