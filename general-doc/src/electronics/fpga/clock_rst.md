@@ -31,6 +31,7 @@ Axilite registers:
 |ttl_rst					     |ttl_rst_o						   |slv_reg3[0]|12
 |lrst_i						  |lrst_o	 						   |slv_reg1[1]|4
 |ddr_data_rst             |ddr_data_rst_o					   |slv_reg4[0]|16
+|decoy_rst                |decoy_rst_o					      |slv_reg5[0]|20
 
 Generate SYNC signal for clockchip: after receiving command from OS through clockchip_sync, detect rising edge of PPS and start counting to generate a 2ms pulse for clockchip (minimum is 1ms)
 ```  
