@@ -33,11 +33,14 @@ Address of slv_reg(n) = 0x0000_1000 + 4 * n
 |slv_reg4[31:0]	|O 	|dq_gc_start_lsb_o		|set the LSB of current dq
 |slv_reg5[15:0]	|O 	|dq_gc_start_msb_o		|set the MSB of current dq
 |slv_reg6[0]	|O 	|command_alpha_enable_o	|set this 0 to 1 to reset alpha_out fifo and start save alpha
-|slv_reg6[1]	|O 	|pair_delay_o			|define if fiber delay [gc] % dq_gc = 0 or 1
+|slv_reg6[1]	|O 	|pair_delay_o			|define if fiber delay [gc] % dq_gc = 0 or 1, for PM
+|slv_reg6[2]	|O 	|de_pair_delay_o		|define if fiber delay [gc] % dq_gc = 0 or 1, for 2nd AM
 |slv_reg7[0]	|O 	|command_gc_enable_o	|set this 0 to 1 to reset gc_out fifo and get data 
 |slv_reg8[31:0]	|O 	|threshold_o			|number of clk200, define reading speed of gc_in fifo
 |slv_reg9[31:0]	|O 	|threshold_full_o		|unused(used to debug size of ddr4)
-|slv_reg10[31:0]|O 	|fiber_delay_o			|set fiber delay [gc] found in calibration
+|slv_reg10[15:0]|O 	|fiber_delay_o			|set bob/alice_bob fiber delay [gc] found in calibration for PM, both on Alice and Bob,for reading angle out of DDR
+|slv_reg10[31:16]|O |de_fiber_delay_o		|set alice_bob fiber delay [gc] found in calibration for 2nd AM, only on Alice, for reading angle out of DDR
+|slv_reg11[15:0]|O 	|ab_fiber_delay_o		|set alice_bob fiber delay [gc] found in calibration, only on Bob to start output the gc+result
 |slv_reg13[8:0] |I 	|ddr_fifos_status_i		|includes idle, empty and full flags of virtual fifo controller
 |slv_reg14[2:0] |I 	|fifos_status_i			|includes full and empty flags of gc_out, alpha_out, gc_in fifos
 |slv_reg15[31:0]|I 	|current_dq_gc_lsb_i	|monitors the LSB of current dq 
@@ -54,13 +57,23 @@ To make sure START command is not close to rising edge of PPS, Alice will reques
 ![](waves/ddr4_start.png)
 
 #### WRITE MANAGEMENT
-In START state, start to count up double global counter and write angles to DDR4. Angles are written as axistream data to AXI Virtual FIFO controller IP. This IP manages the memory map in the MIG, when you want to write or read from DDR4, you just need to manage write/read axistream of AXI Virtual FIFO controller
+In START state, start to count up double global counter and write angles to DDR4. Angles are written as axistream data to AXI Virtual FIFO controller IP. This IP manages the memory map in the MIG, when you want to write or read from DDR4, you just need to manage write/read axistream of AXI Virtual FIFO controller.
+
+The angle include angle for PM and angle for the second AM.
+Dedicate 8bits to encode:
+- 4 LSB : for PM angle
+- next 2 bits : for 2nd AM angle
+- 2 MSB : reserved zeros
 
 #### GC PATH
-Bob FPGA gets detection result, sends gc (dq_gc and q_pos) and click result to Bob OS, only output when gc higher than fiber_delay. Bob then send gc to Alice (through Ethernet). They sends gc to their FPGA 
+Bob FPGA gets detection result, sends gc (dq_gc and q_pos) and click result to Bob OS, only output when gc higher than alice-bob fiber_delay. Bob then send gc to Alice (through Ethernet). They sends gc to their FPGA 
 
 #### READ DDR4 MANAGEMENT
-When FPGA of each party receives gc, start reading angles from DDR4 based on values of gc and fiber delays value. Make sure fifo_gc_in is not full and AXI Virtual FIFO Controller is not full, by defining fifo_gc_in reading speed higher than click rate, define depth of Virtual FIFO large enough 
+When FPGA of each party receives gc, start reading angles from DDR4 based on values of gc and fiber delays value. Make sure fifo_gc_in is not full and AXI Virtual FIFO Controller is not full, by defining fifo_gc_in reading speed higher than click rate, define depth of Virtual FIFO large enough. 
+Fiber delay from angle applied to Alice's 2nd AM is different with the one applied to Alice's PM, reading these angles respectively, then saving to the angles fifo with 4bits encoding:
+- 2 LSB: for PM angle
+- next 1 bit: for 2nd AM angle
+- MSB: reserved zero 
 
 #### SAVE ANGLES
 Start saving the angles read from DDR4 to fifo_alpha_out. Choose a moment(value of gc) to start saving, consider the fiber delay between parties. 
@@ -91,6 +104,7 @@ def Ddr_Data_Reg(command,current_gc,read_speed, fiber_delay, pair_mode):
 ~    Write(0x00001000+12,0x0)
 ~    Write(0x00001000+12,0x1)
 ```
+Add or remove axil registers, depends on need on each parties
 
 - Ddr_Data_Init: reset ddr_data module
 ```python,hidelines=~
@@ -106,7 +120,7 @@ def Ddr_Data_Init():
 - Ddr_Status: monitoring the fifos flags, monitoring every 0.1s
 ```python,hidelines=~
 def Ddr_Status():
-    while True:
+~   while True:
 ~        ddr_fifos_status = Read(0x00001000 + 52)
 ~        fifos_status = Read(0x00001000 + 56)
 ~        hex_ddr_fifos_status = ddr_fifos_status.decode('utf-8').strip()
