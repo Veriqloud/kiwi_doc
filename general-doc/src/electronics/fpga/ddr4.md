@@ -1,5 +1,5 @@
 # DDR4
- Purpose of DDR4: when you get the click event on detection, you need to find the angle applied to that qubit (basis information). DDR4 is used to store the angle so that after get click event, base on value of global counter, you can find the angle. One other reason is that we have constraints over 100km distance between Alice and Bob, the delay on classical channel, so DDR4 is large enough to satisfy these constraints.
+ Purpose of DDR4: when you get the click event on detection, you need to find the angle applied to that qubit (basis information). DDR4 is used to store the angle so that after getting click event, base on value of global counter, you can find the angle. One other reason is that we have constraints over 100km distance between Alice and Bob, the delay on classical channel, so DDR4 is large enough to satisfy these constraints.
  Below is the overview pictures of modules and IPs in FPGA manage the data flow in DDR4:
  - IP DDR4: MIG IP supported by AMD. The core allow you interface directly with the physical Memory. To configure the MIG, follow instructions on opalkelly [DDR4 Memory](https://docs.opalkelly.com/xem8310/ddr4-memory/)
  - axi_virtual_controller_wrapper.v : use AXI Virtual FIFO Controller core from AMD to access DRAM memory as multiple FIFO blocks
@@ -41,6 +41,7 @@ Address of slv_reg(n) = 0x0000_1000 + 4 * n
 |slv_reg10[15:0]|O 	|fiber_delay_o			|set bob/alice_bob fiber delay [gc] found in calibration for PM, both on Alice and Bob,for reading angle out of DDR
 |slv_reg10[31:16]|O |de_fiber_delay_o		|set alice_bob fiber delay [gc] found in calibration for 2nd AM, only on Alice, for reading angle out of DDR
 |slv_reg11[15:0]|O 	|ab_fiber_delay_o		|set alice_bob fiber delay [gc] found in calibration, only on Bob to start output the gc+result
+|slv_reg12[0]   |I 	|pps_sync       		|monitor PPS so that Alice can capture to send START command
 |slv_reg13[8:0] |I 	|ddr_fifos_status_i		|includes idle, empty and full flags of virtual fifo controller
 |slv_reg14[2:0] |I 	|fifos_status_i			|includes full and empty flags of gc_out, alpha_out, gc_in fifos
 |slv_reg15[31:0]|I 	|current_dq_gc_lsb_i	|monitors the LSB of current dq 
@@ -87,7 +88,7 @@ This is the picture describes the states in FPGA, the path of data between Alice
 - Ddr_Data_Reg : Set registers
 
 ```python,hidelines=~
-def Ddr_Data_Reg(command,current_gc,read_speed, fiber_delay, pair_mode):
+def Ddr_Data_Reg(command,current_gc,read_speed, fiber_delay, pair_mode, de_fiber_delay, de_pair_mode, ab_fiber_delay):
 ~    Write(0x00001000+8,hex(int(command)))
 ~    dq_gc_start = np.int64(current_gc) #+s
 ~    print(hex(dq_gc_start)) 
@@ -98,13 +99,13 @@ def Ddr_Data_Reg(command,current_gc,read_speed, fiber_delay, pair_mode):
 ~    Write(0x00001000+20,hex(gc_msb))
 ~    Write(0x00001000+32,hex(read_speed))
 ~    Write(0x00001000+36,hex(threshold_full))
-~    Write(0x00001000+40,hex(fiber_delay))
-~    Write(0x00001000+24,hex(pair_mode<<1))
+~    Write(0x00001000+40,hex(de_fiber_delay<<16 | fiber_delay)) #de_fiber_delay only on Alice
+~    Write(0x00001000+44,hex(ab_fiber_delay)) #Only on Bob
+~    Write(0x00001000+24,hex(de_pair_mode<<2 | pair_mode<<1)) #de_pair_mode only on Alice
 ~    #Enable register setting
 ~    Write(0x00001000+12,0x0)
 ~    Write(0x00001000+12,0x1)
 ```
-Add or remove axil registers, depends on need on each parties
 
 - Ddr_Data_Init: reset ddr_data module
 ```python,hidelines=~
