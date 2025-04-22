@@ -23,5 +23,6 @@ From Axil of XDMA, connect with AXI Interconnect IP to divide address space for 
 |0x0001_2000 |0x0000_1000 4K | clk_rst/clk_rst_mngt.v|
 |0x0001_3000 |0x0000_1000 4K | tdc/time_spi/axi_quad_spi|
 |0x0001_5000 |0x0000_1000 4K | ttl_gate_apd.v|
+|0x0001_6000 |0x0000_1000 4K | decoy.v|
 |0x0002_0000 |0x0001_0000 8K | spi_dacs_ltc/axi_quad_spi|
 |0x0003_0000 |0x0008_0000 64K| fastdac/jesd_transport.v|

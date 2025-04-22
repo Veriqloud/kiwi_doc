@@ -138,6 +138,21 @@ python main.py debug --add_delay_m
 python main.py debug --add_delay_s1
 python main.py debug --add_delay_s2
 ```
+### Decoy signal
+The purpose is to generate the RF signal for second AM on Alice, turn the system into decoy state. This signal take tRNG as ramdom source to switch level, and can be delayed as TTL signal. Run these commands to test signals:
+```
+python main.py alice --decoy_rst
+python main.py alice --decoy
+python main.py alice --de_para_master tune fine inc
+python main.py alice --de_para_slaves fine1 inc1 fine2 inc2
+python main.py alice --de_regs_en
+``` 
+Run these command to trigger fine delays
+```
+python main.py alice --de_add_delay_m
+python main.py alice --de_add_delay_s1
+python main.py alice --de_add_delay_s2
+```
 
 ### DDR4	
 The purpose is to check corresponding of read angle and received global counter. You need:
