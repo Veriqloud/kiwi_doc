@@ -84,6 +84,10 @@ This is the picture describes the states in FPGA, the path of data between Alice
 
 ![ddr4 data flow](pics/ddr4_data_flow.png)
 
+Details in states COUNTING_*. It depends on the calibration result to jump to COUNTING_DE first for COUNTING_AL first.
+
+![ddr4 counting states](pics/ddr4_counting.png)
+
 ## Software control functions
 - Ddr_Data_Reg : Set registers
 
