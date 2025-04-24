@@ -4,7 +4,7 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 
 ![overview](pics/tdc.png)	
 ## clk_rst_buffer
-- OLVDS_TDC.v: buffer for differential output signals, clocks
+### OLVDS_TDC.v: buffer for differential output signals, clocks
 
 |Signals name   |Interface      |Dir |Init status |Description
 |---------------|---------------|----|------------|-----------
@@ -15,7 +15,7 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 |tdc_refclk_n/p |tdc_ext_clkrst |O   |-           |refclk differential pair output  
 |tdc_rstidx_n/p |tdc_ext_clkrst |O   |-           |rsridx differential pair output  
 
-- ILVDS_TDC.v: buffer for differential input signals,clocks
+### ILVDS_TDC.v: buffer for differential input signals,clocks
 
 |Signals name   |Interface      |Dir |Init status |Description
 |---------------|---------------|----|------------|-----------
@@ -30,7 +30,7 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 |O_sdiA         |-              |O   |-           |sdiA in single-ended   
 |O_sdiB         |-              |O   |-           |sdiB in single-ended   
 
-- tdc_clk_rst_mngt.v : generate refclk 5MHz, rstindex for TDC; generate simulated STOPA signal for TDC
+### tdc_clk_rst_mngt.v : generate refclk 5MHz, rstindex for TDC; generate simulated STOPA signal for TDC
 
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
@@ -52,8 +52,8 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 |N_TDC_REFCLK   |8     |Every 8 periods of refclk, generate a rstidx
 |TDC_DIV_HALF   |20    |refclk (MHz) = 200 (MHz) / (TDC_DIV_HALF*2)  
 ## time_spi
-- Quad AXI spi: IP of AMD, manage to transfer data from AXI bus to spi bus. All information of IP is provided by Xilinx
-- spi_inout_mngt.v: mananage inout pins from quad AXI spi to physical spi pins
+### Quad AXI spi: IP of AMD, manage to transfer data from AXI bus to spi bus. All information of IP is provided by Xilinx
+### spi_inout_mngt.v: mananage inout pins from quad AXI spi to physical spi pins
 
 |Signals name   |Interface      |Dir |Init status |Description
 |---------------|---------------|----|------------|-----------
@@ -78,11 +78,11 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 ## system_ila_tdc 
 ILA debug core, probes signals under tdc blocks
 ## tdc_mngt
-- AS6501_IF.v: manages digital data from TDC, output tdc time/global counter/click result depends on axil commands
+### AS6501_IF.v: manages digital data from TDC, output tdc time/global counter/click result depends on axil commands
 
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
-|m_axis sgnals        |m_axis    |IO  |-           |match with s_axis interface of fifo_gc_tdc_rtl.v 
+|m_axis signals       |m_axis    |IO  |-           |match with s_axis interface of fifo_gc_tdc_rtl.v 
 |sr signals           |sr        |IO  |-           |match with mr interface
 |lclk_i               |Clock     |I   |200MHz      |lclk
 |clk200_i             |Clock     |I   |200MHz      |clk200
@@ -107,13 +107,15 @@ ILA debug core, probes signals under tdc blocks
 |others               |-         |O   |-           |other signals is for debug
 
 
-- TDC_REG_MNGT_v1_0.v: manages axilite registers
+### TDC_REG_MNGT_v1_0.v: manages axilite registers
 
 User parameters:
-```
-parameter integer C_s_axil_DATA_WIDTH	= 32
-parameter integer C_s_axil_ADDR_WIDTH	= 12
-```
+|Parameter           |Value |Description
+|--------------------|------|------------
+|C_S_Axil_Addr_Width |12    |Address width of axil interface
+|C_S_Axil_Data_Width |32    |Address width of axil interface
+
+Port descriptions
 
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
@@ -132,11 +134,11 @@ parameter integer C_s_axil_ADDR_WIDTH	= 12
 |s_axis_tdata [127:0] |s_axis    |I   |-           |axis stream data gc in 
 |s_axis_tuser [3:0]   |s_axis    |I   |-           |axis stream tuser
 |s_axis_tvalid        |s_axis    |I   |-           |axis stream valid
-|s_axis_tready        |s_axis    |O   |-           |aixs stream ready
+|s_axis_tready        |s_axis    |O   |-           |axis stream ready
 |m_axis_tdata [127:0] |m_axis    |O   |-           |axis stream data gc out
 |m_axis_tuser [3:0]   |m_axis    |O   |-           |axis stream tuser
 |m_axis_tvalid        |m_axis    |O   |-           |axis stream valid
-|m_axis_tready        |m_axis    |I   |-           |aixs stream ready
+|m_axis_tready        |m_axis    |I   |-           |axis stream ready
 |m_aclk               |Clock     |I   |250MHz      |clock for m_axis interface
 |s_aclk               |Clock     |I   |200MHz      |clock for s_axis interface
 |s_aresetn            |Reset     |I   |-           |reset for s_axis interface, active low
@@ -158,7 +160,7 @@ Offset address of slv_reg(n) = n*4, n is interger.
 |mr_command_i				    |tdc_command_o				|O	|slv_reg8[2:0]	|define with mode (continuous or gated) to output gc
 |mr_reg_enable_tdc_i		    |tdc_reg_enable_o			|O	|slv_reg9[0]	|update registers in lclk domain
 |mr_reg_enable200_i			    |tdc_reg_enable200_o		|O	|slv_reg9[1]	|update registers in clk200 domain
-|stopa_sim_enable             	|stopa_sim_enable_o			|O	|slv_reg9[2]	|enable register update for stopa_sim
+|stopa_sim_enable             	|stopa_sim_enable_o			|O	|slv_reg9[2]	|enable re  gister update for stopa_sim
 |mr_command_enable			    |tdc_command_enable_o		|O	|slv_reg10[0]	|pull high to start filling gc to fifo
 |mr_total_count_o			    |total_count_i				|I	|slv_reg16[31:0]|monitoring total click in gated APD
 |mr_click0_count_o			    |click0_count_i				|I	|slv_reg15[31:0]|monitoring click in soft_gate0

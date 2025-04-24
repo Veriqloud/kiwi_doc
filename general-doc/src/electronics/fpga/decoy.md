@@ -6,19 +6,79 @@ Purpose of this module:
 
 ![](pics/decoy_signal.png)
 
-## Axil registers
+## decoy_rng_fifos.v
+### Port descriptions
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|s_axis_tdata[127:0]  |s_axis    |I   |-           |tRNG data come from xdma_h2c stream
+|s_axis_tvalid        |s_axis    |I   |-           |data valid indication from xdma_h2c stream
+|s_axis_tready        |s_axis    |O   |-           |ready signal from logic
+|s_axis_clk           |Clock     |I   |250MHz      |Clock of axistream
+|s_axis_tresetn       |Reset     |I   |-           |Reset of axistream, active LOW
+|clk200               |Clock     |I   |200MHz      |Clock for logic
+|tx_core_rst          |Reset     |I   |-           |Using same reset with rng fifos in fastdac
+|rd_en_16             |-         |I   |-           |Enable signal at 10MHz, in clk200 domain
+|rd_en_4              |-         |I   |-           |Enable signal at 40MHz, in clk200 domain
+|de_rng_dout[3:0]     |-         |O   |-           |tRNG output at 40MHz
 
-|parameter                    |register name                | axil regs    | offset address |
-|-----------------------------|-----------------------------|--------------|----------------
-|reg_enable_o                 |reg_enable_o                 |slv_reg0[0]   |0 
-|tune_step_o                  |tune_step_o                  |slv_reg1[3:0] |4
-|trigger_enstep_o             |trigger_enstep_o             |slv_reg2[0]   |8
-|trigger_enstep_slv1_o        |trigger_enstep_slv1_o        |slv_reg2[1]   |8
-|trigger_enstep_slv2_o        |trigger_enstep_slv2_o        |slv_reg2[2]   |8
-|decoy_rng_mode_o             |decoy_rng_mode_o             |slv_reg3[0]   |12
-|decoy_params_80_o            |decoy_params_80_o            |slv_reg5[31:0]|20
-|decoy_params_slv_o           |decoy_params_slv_o           |slv_reg6[31:0]|24
-|decoy_dpram_max_addr_rng_int |decoy_dpram_max_addr_rng_int |slv_reg7[5:0] |28
+
+## decoy.v
+### Port descriptions
+
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|s_axil signals       |s_axil    |IO  |-           |standard s_axil interface 
+|s_axil_aclk          |Clock     |I   |15MHz       |clock for axil interface 
+|s_axil_aresetn       |Reset     |I   |-           |reset for axil interface, active LOW
+|clk240               |Clock     |I   |240MHz      |clock to generate gate signal 
+|clk80                |Clock     |I   |80MHz       |clock for fine delay this gate signal
+|clk200               |Clock     |I   |200MHz      |clock to generate gate signal
+|pps_i                |-         |I   |-           |PPS from WRS
+|decoy_rst            |Reset     |I   |-           |reset for logic, active HIGH
+|rd_en_4              |-         |I   |-           |Enable signal at 40MHz, in clk200 domain
+|rng_value[3:0]       |-         |I   |-           |tRNG input at 40MHz
+|decoy_signal_n/p     |-         |O   |-           |decoy signal output to pins
+|decoy_signal         |-         |O   |-           |decoy signal output without delay
+|the others signals   |-         |O   |-           |for debug on ILA
+
+
+### User Parameters
+
+|Parameter           |Value     |Description
+|--------------------|----------|------------
+|C_S_Axil_Addr_Width |12        |Address width of axil interface
+|C_S_Axil_Data_Width |32        |Address width of axil interface
+|DELAY FORMAT        |COUNT     |Delay format for ODELAY3
+|DELAY TYPE          |VARIABLE  |Delay type for ODELAY3
+|DELAY VALUE         |50        |need to be between 45-65 taps for IDELAY3 calibrates correctly
+|REFCLK FRE          |300       |refclk for IDELAY3 and ODELAY3, default
+|UPDATE MODE         |ASYNC     |update by logic control
+
+
+### Axil registers
+Base address: 0x0001_6000
+Offset address slv_reg(n) : 4*n
+
+|parameter                    |register name                | axil regs    | Description |
+|-----------------------------|-----------------------------|--------------|--------------
+|reg_enable_o                 |reg_enable_o                 |slv_reg0[0]   |Enable register update 
+|tune_step_o                  |tune_step_o                  |slv_reg1[3:0] |Set tune step for decoy signal, 1 step is 1 period of 240MHz
+|trigger_enstep_o             |trigger_enstep_o             |slv_reg2[0]   |trigger fine delay of master ODELAY3
+|trigger_enstep_slv1_o        |trigger_enstep_slv1_o        |slv_reg2[1]   |trigger fine delay of slave1 ODELAY3
+|trigger_enstep_slv2_o        |trigger_enstep_slv2_o        |slv_reg2[2]   |trigger fine delay of slave2 ODELAY3
+|decoy_rng_mode_o             |decoy_rng_mode_o             |slv_reg3[0]   |Choose rng source. 0: from dpram, 1: from tRNG
+|resolution		              |decoy_params_80_o[14:1] 		|slv_reg5[14:1]|Set length of fine delay step on master ODELAY3
+|increase_en	              |decoy_params_80_o[0]			|slv_reg5[0]   |Set fine delay increase(1)/decrease(0) on master ODELAY3
+|resolution_slv2              |decoy_params_slv_o[30:17] 	|slv_reg6[30:17]|Set length of fine delay step on slave 2 ODELAY3
+|increase_en_slv2             |decoy_params_slv_o[16]		|slv_reg6[16]   |Set fine delay increase(1)/decrease(0) on slave 2 ODELAY3
+|resolution_slv1              |decoy_params_slv_o[14:1] 	|slv_reg6[14:1] |Set length of fine delay step on slave 1 ODELAY3
+|increase_en_slv1             |decoy_params_slv_o[0]		|slv_reg6[0]    |Set fine delay increase(1)/decrease(0) on slave 1 ODELAY3
+|decoy_dpram_max<br>_addr_rng_int |decoy_dpram_max<br>_addr_rng_int |slv_reg7[5:0] |Set max read address for rng dpram
+
+Writing to dpram from axil registers.
+- Base address: 0x0001_6000
+- Dpram offset: 4096
+- Write register(n) to dpram at: 0x0001_6000 + 4096 + 4*n 
 
 ## Generate signal
 
@@ -32,7 +92,7 @@ def decoy_reset():
 Test_Decoy() function writing data for fake rng dpram and choosing rng mode.
 - Max address for dpram is 64
 - Rng mode : 0 for fake, 1 for tRNG
-- Start decoy_rng.service to if choosing tRNg mode
+- Start decoy_rng.service to if choosing tRNG mode
 
 ```python,hidelines=~
 def Test_Decoy():
