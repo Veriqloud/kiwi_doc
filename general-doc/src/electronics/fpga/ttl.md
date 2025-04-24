@@ -6,7 +6,7 @@ Purpose of this module:
 
 ![](pics/ttl_gate.png)
 
-# Port descriptions
+## Port descriptions
 
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
@@ -20,7 +20,7 @@ Purpose of this module:
 |pulse_n/p            |-         |O   |-           |output to pins
 |pulse_rep_n/p        |-         |O   |-           |output to pins, without fine delay
 
-# User parameters
+## User parameters
 
 |Parameter           |Value     |Description
 |--------------------|----------|------------
@@ -100,7 +100,8 @@ This works the same for slave 1 and slave 2 cascaded to master
 |increase_en_slv1|ttl_params_slv_o[0]			|slv_reg3[0]    |Set fine delay increase(1)/decrease(0) on slave 1 ODELAY3
 |ttl_params_en_o|ttl_params_en_o[0]				|slv_reg2[0]    |Enable register update -->
 
-## Generate signal
+## Software control
+### Generate signal
 - Clock domain: 240 MHz
 - Trigger PPS and align the pulse to PPS
 - Change duty and tune delay the pulse with duty_val and delay_val
@@ -140,7 +141,7 @@ def params_en():
 ~    Write(Base_Add,0x01)
 ```
 
-## Fine delay
+### Fine delay
 AMD support ODELAYE3 primitives to delay a signal in ps step, full range is 1,25ns. Read [UG974](https://docs.amd.com/v/u/2017.1-English/ug974-vivado-ultrascale-libraries) and [UG571](https://docs.amd.com/r/en-US/ug571-ultrascale-selectio/VAR_LOAD-Mode?tocId=6Pvw1KYIWoLfYxO5WATjSQ) for more details
 
 Tune delay step is around 4,16ns. So, I choose Cascade configuration for ODELAYE3
