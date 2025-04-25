@@ -54,8 +54,13 @@ This works the same for slave 1 and slave 2 cascaded to master
 |31:23|-               |-                   ||Reserved 0
 |22:19|ttl_params_o    |duty_val            ||Set duty cycle width, 1 step is 1 period of 240MHz
 |18:15|ttl_params_o    |delay_val           ||Set tune step, 1 step is 1 period of 240MHz
-|14:1 |ttl_params_o    |resolution          ||Set length of fine delay step on master ODELAY3
+|14:1 |ttl_params_o    |resolution          |max is 8192|Set length of fine delay step on master ODELAY3
 |0    |ttl_params_o    |increase_en         |1: increase<br>0: decrease|Set fine delay direction on master ODELAY3
+
+The resolution is in unit of [80MHz period]
+- Maximum fine delay tap: 512
+- Require 16 clk cycles for each tap
+- Resolution = 512*16 = 8192
 
 ### slv_reg2 - R/W Access - Trigger Control
 |Bits|Signal name             |HW Wire      |Action/Value|Description
@@ -67,9 +72,9 @@ This works the same for slave 1 and slave 2 cascaded to master
 |Bits |Signal name         |HW Wire             |Action/Value |Description
 |-----|--------------------|--------------------|------------|-
 |31   |-                   |-                   ||Reserved 0
-|30:17|ttl_params_slv_o    |resolution_slv2     ||Set length of fine delay step on slave 2 ODELAY3
+|30:17|ttl_params_slv_o    |resolution_slv2     |max is 8192|Set length of fine delay step on slave 2 ODELAY3
 |16   |ttl_params_slv_o    |increase_en_slv2    |1: increase<br>0: decrease|Set fine delay direction on slave 2 ODELAY3
-|14:1 |ttl_params_slv_o    |resolution_slv1     ||Set length of fine delay step on slave 1 ODELAY3
+|14:1 |ttl_params_slv_o    |resolution_slv1     |max is 8192|Set length of fine delay step on slave 1 ODELAY3
 |0    |ttl_params_slv_o    |increase_en_slv1    |1: increase<br>0: decrease|Set fine delay direction on slave 1 ODELAY3
 
 ### slv_reg4 - R/W Access - Trigger Control

@@ -37,7 +37,7 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 |clk200_i             |Clock     |I   |-           |clock source 200MHz
 |tdc_rst              |Reset     |I   |-           |reset active HIGH
 |pps_i                |-         |I   |-           |pps input from WRS
-|stopa_sim_limit[31:0]|-         |I   |-           |registers to set division limit for stopa_sim <br> [7:0] divide_stopa : for fre <br> [15:8] limit_low : begin of duty cycle <br> [31:16] limit high: end of duty cycle 
+|stopa_sim_limit[31:0]|-         |I   |-           |registers to set division limit for stopa_sim 
 |stopa_sim_enable_i   |-         |I   |-           |pull to high to update registers
 |tdc_refclk_o         |-         |O   |-           |generated refclk for TDC
 |tdc_rstidx_o         |-         |O   |-           |generated reset index for TDC
@@ -124,7 +124,7 @@ Port descriptions
 |stopa_sim_limit[31:0]|-         |O   |-           |registers tdc_clk_rst_mngt.v (details in Axil registers)
 |stopa_sim_enable_o   |-         |O   |-           |registers tdc_clk_rst_mngt.v (details in Axil registers)
 |s_axil_aclk          |Clock     |I   |15MHz       |clock for axil interface  
-|s_axil_aresetn       |Reset     |I   |avtive low  |reset for axil interface 
+|s_axil_aresetn       |Reset     |I   |Active LOW  |reset for axil interface 
 
 
 - fifo_gc_tdc_rtl.v: instantiates fifo_gc_tdc, this fifo is axistream fifo. Instantiate axistream fifo in an RTL module allows to modify FREQ_HZ parameter of axistream interface when rebuild the block design
@@ -145,9 +145,104 @@ Port descriptions
 
 
 ### Axil registers
-Offset address of slv_reg(n) = n*4, n is interger.
+- Base address: 0x0000_0000
+- Offset address slv_reg(n) : 4*n
+#### slv_reg0 - R/W Access - Trigger Control
+|Bits|Signal name             |HW Wire      |Action/Value|Description
+|----|------------------------|-------------|------------|-----------
+|31:1|-                       |-            |-           |Reserved 0
+|0   |tdc_enable              |mr_enable    |pull LOW to HIGH|Enable signal to receive sdi and frame from TDC
 
-|signals in <br> TDC_REG_MNGT<br>_v1_0.v	|signals in <br> axil modules    |Dir|axil registers	| Description 
+#### slv_reg1 - R/W Access - Configuration
+|Bits |Signal name             |HW Wire      |Action/Value|Description
+|-----|------------------------|-------------|------------|-----------
+|31:16|-                       |-            |-           |Reserved 0  
+|15:14|tdc_index_stop<br>_bitwise_o|mr_index_stop<br>_bitwise_i|-|Reserved 0
+|13:8 |tdc_index_stop<br>_bitwise_o|mr_index_stop<br>_bitwise_i|default:14|Define stop bitwise (match with TDC)
+|7:6  |tdc_index_stop<br>_bitwise_o|mr_index_stop<br>_bitwise_i|-|Reserved 0
+|5:0  |tdc_index_stop<br>_bitwise_o|mr_index_stop<br>_bitwise_i|default:4|Define index bitwise (match with TDC)
+
+#### slv_reg2 - R/W Access - Trigger Control
+|Bits|Signal name    |HW Wire      |Action/Value|Description
+|----|---------------|-------------|------------|-----------
+|31:1|-              |-            |-           |Reserved 0
+|0   |start_gc_o     |mr_start_gc_i|pull LOW to HIGH|Enter START state of tdc
+
+#### slv_reg3 - R/W Access - Configuration
+|Bits |Signal name     |HW Wire      |Action/Value|Description
+|-----|----------------|-------------|------------|----------
+|31:16|stopa_sim_limit |stopa_sim_limit|max 512   |limit high: end of duty cycle
+|15:8 |stopa_sim_limit |stopa_sim_limit|max 256   |limit_low : begin of duty cycle
+|7:0  |stopa_sim_limit |stopa_sim_limit|max 256   |divide_stopa
+
+It depends on frequency of STOPA(in tdc_clk_rst_mngt.v) to set limit high and limit low for duty cycle.
+The limit value is in unit of clk200 period
+
+#### slv_reg4 - R/W Access - Configuration
+|Bits |Signal name             |HW Wire      |Action/Value|Description
+|-----|------------------------|-------------|------------|----------
+|31:24|gate0_o                 |mr_gate0_i   |max 256     |define soft gate0 width
+|23:0 |gate0_o                 |mr_gate0_i   |max 625     |define soft gate0 start postion
+
+- Qubit rate is 80MHz(12.5ns)
+- TDC resolution is 20ps
+- Gate position should be in range 0..625
+
+#### slv_reg5 - R/W Access - Configuration
+|Bits |Signal name             |HW Wire      |Action/Value|Description
+|-----|------------------------|-------------|------------|----------
+|31:24|gate1_o                 |mr_gate1_i   |max 256     |define soft gate1 width
+|23:0 |gate1_o                 |mr_gate1_i   |max 625     |define soft gate1 start postion
+
+#### slv_reg6 - R/W Access - Configuration
+|Bits |Signal name    |HW Wire           |Action/Value|Description
+|-----|---------------|------------------|------------|-----------
+|31:16|-              |-                 |-           |Reserved 0
+|15:0 |shift_tdc_time_o|mr_shift_tdc_time_i|-         |Define small shift for tdc time
+
+#### slv_reg7 - R/W Access - Configuration
+|Bits |Signal name    |HW Wire           |Action/Value|Description
+|-----|---------------|------------------|------------|-----------
+|31:16|-              |-                 |-           |Reserved 0
+|15:0 |shift_gc_back_o|mr_shift_gc_back_i|-           |Define small offset for gc
+
+#### slv_reg8 - R/W Access - Configuration
+|Bits|Signal name    |HW Wire      |Action/Value|Description
+|----|---------------|-------------|------------|-----------
+|31:3|-              |-            |-           |Reserved 0
+|2:0 |tdc_command_o|mr_command_i|-|Define with mode (continuous or gated) to output gc
+
+#### slv_reg9 - R/W Access - Trigger Control
+|Bits|Signal name             |HW Wire      |Action/Value|Description
+|----|------------------------|-------------|------------|-----------
+|31:3|-                       |-            |-           |Reserved 0
+|2   |stopa_sim_enable_o      |stopa_sim_enable      |Pull LOW to HIGH|Enable register update for stopa_sim
+|1   |tdc_reg_enable200_o     |mr_reg_enable200_i    |Pull LOW to HIGH|Update registers in clk200 domain
+|0   |tdc_reg_enable_o        |mr_reg_enable_tdc_i   |Pull LOW to HIGH|Update registers in lclk domain
+
+#### slv_reg10 - R/W Access - Trigger Control
+|Bits|Signal name    |HW Wire      |Action/Value|Description
+|----|---------------|-------------|------------|-----------
+|31:1|-              |-            |-           |Reserved 0
+|0   |tdc_command_enable_o|mr_command_enable|pull LOW to HIGH|Start filling gc to fifo
+
+#### slv_reg14 - R Access - Monitoring
+|Bits|Signal name    |HW Wire      |Action/Value|Description
+|----|---------------|-------------|------------|-----------
+|31:0|click1_count_i |mr_click1_count_o|-       |monitoring click in soft_gate1
+
+#### slv_reg15 - R Access - Monitoring
+|Bits|Signal name    |HW Wire      |Action/Value|Description
+|----|---------------|-------------|------------|-----------
+|31:0|click0_count_i |mr_click0_count_o|-       |monitoring click in soft_gate0
+
+#### slv_reg16 - R Access - Monitoring
+|Bits|Signal name    |HW Wire      |Action/Value|Description
+|----|---------------|-------------|------------|-----------
+|31:0|total_count_i  |mr_total_count_o|-       |monitoring total click in gated APD
+
+
+<!-- |signals in <br> TDC_REG_MNGT<br>_v1_0.v	|signals in <br> axil modules    |Dir|axil registers	| Description 
 |-------------------------------|---------------------------|---|---------------|-------------
 |mr_enable 		 			    |tdc_enable					|O	|slv_reg0[0]	|enable signal to receive sdi and frame from TDC
 |mr_index_stop<br>_bitwise_i	    |tdc_index_stop<br>_bitwise_o	|O	|slv_reg1[15:0]	|define index and stop bitwise (matched with TDC setting) <br> index : slv_reg1[5:0] <br> stop: slv_reg1[13:8] 
@@ -160,12 +255,12 @@ Offset address of slv_reg(n) = n*4, n is interger.
 |mr_command_i				    |tdc_command_o				|O	|slv_reg8[2:0]	|define with mode (continuous or gated) to output gc
 |mr_reg_enable_tdc_i		    |tdc_reg_enable_o			|O	|slv_reg9[0]	|update registers in lclk domain
 |mr_reg_enable200_i			    |tdc_reg_enable200_o		|O	|slv_reg9[1]	|update registers in clk200 domain
-|stopa_sim_enable             	|stopa_sim_enable_o			|O	|slv_reg9[2]	|enable re  gister update for stopa_sim
+|stopa_sim_enable             	|stopa_sim_enable_o			|O	|slv_reg9[2]	|enable register update for stopa_sim
 |mr_command_enable			    |tdc_command_enable_o		|O	|slv_reg10[0]	|pull high to start filling gc to fifo
 |mr_total_count_o			    |total_count_i				|I	|slv_reg16[31:0]|monitoring total click in gated APD
 |mr_click0_count_o			    |click0_count_i				|I	|slv_reg15[31:0]|monitoring click in soft_gate0
 |mr_click1_count_o			    |click1_count_i				|I	|slv_reg14[31:0]|monitoring click in soft_gate1
-|mr_data_count_valid_o		    |data_count_valid_i			|I	|-              |signal to tell click count data is valid
+|mr_data_count_valid_o		    |data_count_valid_i			|I	|-              |signal to tell click count data is valid -->
 
 ### Data flow
 Picture below shows an overview how data flows through modules and xdma channels. Responses to commands are written in modules AS6501_IF.v

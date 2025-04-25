@@ -56,10 +56,58 @@ Purpose of this module:
 
 
 ### Axil registers
-Base address: 0x0001_6000
-Offset address slv_reg(n) : 4*n
+- Base address: 0x0001_6000
+- Offset address slv_reg(n) : 4*n
 
-|parameter                    |register name                | axil regs    | Description |
+#### slv_reg0 - R/W Access - Triiger Control
+|Bits|Signal name |HW Wire      |Action/Value|Description
+|----|------------|-------------|------------|-----------
+|31:1|-           |-            |-           |Reserved 0
+|0   |reg_enable_o|reg_enable_o |pull 0-1    |Enable register update
+
+#### slv_reg1 - R/W Access - Configuration
+|Bits|Signal name |HW Wire      |Action/Value|Description
+|----|------------|-------------|------------|-----------
+|31:4|-           |-            |-           |Reserved 0
+|3:0 |tune_step_o |tune_step_o  |8 steps max in logic|Set tune step for decoy signal, 1 step is 1 period of 240MHz
+
+#### slv_reg2 - R/W Access - Triiger Control
+|Bits|Signal name             |HW Wire      |Action/Value|Description
+|----|------------------------|-------------|------------|-----------
+|31:3|-                       |-            |-           |Reserved 0
+|2   |trigger_enstep_slv2_o   |trigger_enstep_slv2_o |pull 0-1-0.Stay HIGH long enough<br>coresponding resolution |trigger fine delay slave 2
+|1   |trigger_enstep_slv1_o   |trigger_enstep_slv1_o |same as slave 2 |trigger fine delay slave 1
+|0   |trigger_enstep_o        |trigger_enstep_o      |same as slave 2 |trigger fine delay master
+
+#### slv_reg3 - R/W Access - Configuration
+|Bits|Signal name |HW Wire      |Action/Value|Description
+|----|------------|-------------|------------|-----------
+|31:1|-           |-            |-           |Reserved 0
+|0   |decoy_rng_mode_o |decoy_rng_mode_o  |0: from dpram<br>1: from tRNG|Choose rng source
+
+#### slv_reg5 - R/W Access - Configuration
+|Bits |Signal name     |HW Wire             |Action/Value|Description
+|-----|----------------|--------------------|------------|-
+|31:15|-               |-                   ||Reserved 0
+|14:1 |decoy_params_80_o|resolution         |max is 8192|Set length of fine delay step on master ODELAY3
+|0    |decoy_params_80_o|increase_en        |1: increase<br>0: decrease|Set fine delay direction on master ODELAY3
+
+#### slv_reg6 - R/W Access - Configuration
+|Bits |Signal name         |HW Wire         |Action/Value |Description
+|-----|--------------------|----------------|------------|-
+|31   |-                   |-               ||Reserved 0
+|30:17|decoy_params_slv_o  |resolution_slv2 |max is 8192|Set length of fine delay step on slave 2 ODELAY3
+|16   |decoy_params_slv_o  |increase_en_slv2|1: increase<br>0: decrease|Set fine delay direction on slave 2 ODELAY3
+|14:1 |decoy_params_slv_o  |resolution_slv1 |max is 8192|Set length of fine delay step on slave 1 ODELAY3
+|0    |decoy_params_slv_o  |increase_en_slv1|1: increase<br>0: decrease|Set fine delay direction on slave 1 ODELAY3
+
+#### slv_reg7 - R/W Access - Configuration
+|Bits|Signal name |HW Wire      |Action/Value|Description
+|----|------------|-------------|------------|-----------
+|31:6|-           |-            |-           |Reserved 0
+|5:0 |decoy_dpram_max<br>_addr_rng_int |decoy_dpram_max<br>_addr_rng_int  |max is 64|Set max read address for rng dpram
+
+<!-- |parameter                    |register name                | axil regs    | Description |
 |-----------------------------|-----------------------------|--------------|--------------
 |reg_enable_o                 |reg_enable_o                 |slv_reg0[0]   |Enable register update 
 |tune_step_o                  |tune_step_o                  |slv_reg1[3:0] |Set tune step for decoy signal, 1 step is 1 period of 240MHz
@@ -73,12 +121,14 @@ Offset address slv_reg(n) : 4*n
 |increase_en_slv2             |decoy_params_slv_o[16]		|slv_reg6[16]   |Set fine delay increase(1)/decrease(0) on slave 2 ODELAY3
 |resolution_slv1              |decoy_params_slv_o[14:1] 	|slv_reg6[14:1] |Set length of fine delay step on slave 1 ODELAY3
 |increase_en_slv1             |decoy_params_slv_o[0]		|slv_reg6[0]    |Set fine delay increase(1)/decrease(0) on slave 1 ODELAY3
-|decoy_dpram_max<br>_addr_rng_int |decoy_dpram_max<br>_addr_rng_int |slv_reg7[5:0] |Set max read address for rng dpram
+|decoy_dpram_max<br>_addr_rng_int |decoy_dpram_max<br>_addr_rng_int |slv_reg7[5:0] |Set max read address for rng dpram -->
 
+### Write to dpram from axil
 Writing to dpram from axil registers.
 - Base address: 0x0001_6000
 - Dpram offset: 4096
-- Write register(n) to dpram at: 0x0001_6000 + 4096 + 4*n 
+- Write register(n) to dpram at: 0x0001_6000 + 4096 + 4*n
+- Each register is 32 bits 
 
 ## Generate signal
 

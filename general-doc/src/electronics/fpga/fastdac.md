@@ -33,7 +33,20 @@ fastdac block is splited into 3 layers:
 - jesd: module jesd204b_tx_wrapper.v
 - jesd phy: IP jesd204 phy
 
+To synchronise the output with PPS, add an extra module to sync_tx_ready to PPS
+
 ![fastdac block](pics/fastdac_hier.png)
+
+### Sync_tx_tready
+This module will synchronize tx_tready to PPS to make sure the analog output of the Receiver will be synced
+#### Port descriptions
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|pps_i                |-         |I   |-           |PPS from WRS
+|tx_core_clk          |Clock     |I   |200MHz      |clock for logic
+|tx_core_rst          |Reset     |I   |-           |reset for jesd tx core
+|tx_tready            |          |I   |-           |signal from jesd, ready to send data
+|tx_tready_o          |          |O   |-           |tx_tready synced to PPS
 
 ### Jesd transport
 Generate data to provide for Jesd. There are 2 DACs inside AD9152, so DAC0 in charge of signal for AM, DAC1 in charge of signal for PM. 
@@ -51,8 +64,36 @@ Generate data to provide for Jesd. There are 2 DACs inside AD9152, so DAC0 in ch
 - For visibility, apply sequence of 64 phases (from 0 to 2\\(\pi\\) or higher)
 - Signal can be shifted 10 steps, 1,25ns each step
 
-#### Programming note
-- Axil registers 
+#### Port descriptions
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|axil signals         |s_axil    |IO  |-           |standard axilite interface for r/w registers 
+|s_axil_aclk          |Clock     |I   |15MHz       |clock for axil interface 
+|s_axil_aresetn       |Reset     |I   |-           |reset for axil interface, active LOW
+|s_axis_tdata[127:0]  |s_axis    |I   |-           |rng data from xdma0_h2c 
+|s_axis_tvalid        |s_axis    |I   |-           |stream valid indicator 
+|s_axis_tready        |s_axis    |O   |-           |raise high when ready to receive data
+|s_axis_clk           |Clock     |I   |250MHz      |clock for axis interface 
+|s_axis_tresetn       |Reset     |I   |-           |reset for axis interface, active LOW
+|tx_tdata[127:0]      |tx        |O   |-           |send data to jesd layer 
+|tx_tready            |tx        |I   |-           |jesd indicator ready to receive data 
+|tx_core_clk          |Clock     |I   |200MHz      |clock domain for logic 
+|tx_core_rst          |Reset     |I   |-           |reset for logic, active HIGH
+|tdata200_mod         |-         |I   |-           |data from tdc
+|gate_pos0/1/2/3      |-         |I   |-           |gate_pos0/1/2/3 from tdc
+|q_gc_time_valid_mod16|-         |I   |-           |q_gc modulo 16
+|rd_en_4              |-         |O   |-           |enable signal at 40MHz
+|rd_en_16             |-         |O   |-           |enable signal at 10MHz
+|rng_value[3:0]       |-         |O   |-           |rng data send to ddr to save
+|other ports          |-         |O   |-           |for debugging
+
+#### User parameters
+|Parameter           |Value     |Description
+|--------------------|----------|------------
+|C_S_Axil_Addr_Width |16        |Address width of axil interface
+|C_S_Axil_Data_Width |32        |Address width of axil interface
+
+#### Axil registers 
 From the Axil address distribution table, module target jesd_transport takes 64K from offset 0x0003_0000
 
 |Offset        | max address |Range|Target
@@ -62,10 +103,58 @@ From the Axil address distribution table, module target jesd_transport takes 64K
 |0x0003_2000   |0X0004_0000  |57344| Data for dpram_rng
 
 Tables of Registers for parameters, base is 0x0003_0000
-
 Address of slv_reg(n) = 0x0003_0000 + 4 * n
+##### slv_reg1 - R/W Access - Configuration
+|Bits |Signal name             |HW Wire      |Action/Value|Description
+|-----|------------------------|-------------|------------|-----------
+|31:16|fastdac_up_offset_o     |fastdac_up_offset_o|-     |up offset in feedback mode of Bob
+|15:8 |-                       |-            |-           |Reserved 0
+|7:4  |fastdac_zero_pos_o      |fastdac_zero_pos_i|max 15 |Define position to insert the zero on PM signal
+|3:0  |fastdac_amp_dac1_shift_o|shift_i      |max 10      |shift step for PM signal 
 
-|Slave_reg      | Reg name                        | Description
+##### slv_reg2 - R/W Access - Configuration
+|Bits |Signal name            |HW Wire      |Action/Value|Description
+|-----|-----------------------|-------------|------------|-----------
+|31:16|fastdac_amp_dac1_o     |fastdac_amp_dac1_i|-     |amplitude0 for PM signal
+|15:0 |fastdac_amp_dac1_o     |fastdac_amp_dac1_i|-     |amplitude1 for PM signal
+
+##### slv_reg3 - R/W Access - Trigger Control
+|Bits |Signal name            |HW Wire      |Action/Value|Description
+|-----|-----------------------|-------------|------------|-----------
+|31:1 |-                      |-            |-           |Reserved 0
+|0    |dac1_reg_en_o          |reg_en_o     |Pull LOW to HIGH|Enable to update registers
+
+##### slv_reg4 - R/W Access - Configuration
+|Bits |Signal name            |HW Wire      |Action/Value|Description
+|-----|-----------------------|-------------|------------|-----------
+|31:16|-                      |-            |-           |Reserved 0
+|15:8 |fastdac_dpram_max<br>_addr_seq_dac1_o|fastdac_dpram_max<br>_addr_seq_dac1_i|-|dpram_seq max read add
+|7:0  |fastdac_dpram_max<br>_addr_seq_dac0_o|fastdac_dpram_max<br>_addr_seq_dac0_i|-|dpram_seq max read add
+
+##### slv_reg5 - R/W Access - Configuration
+|Bits |Signal name            |HW Wire      |Action/Value|Description
+|-----|-----------------------|-------------|------------|-----------
+|31:5 |-                      |-            |-           |Reserved 0
+|4    |fastdac_dac0_mode_o    |fastdac_dac0_mode_i|1:fpga hardcoded sequence<br>0:from dpram|Choose which sequence for AM signal
+|3    |fastdac_zero_mode_o    |fastdac_zero_mode_i|1:enable<br>0:disable|Enable insert zeros to PM signal
+|2    |fastdac_fb_mode_o      |fastdac_fb_mode_i  |1:enable<br>0:disable|Enable feedback mode on Bob
+|1    |fastdac_dac1_mode_o    |fastdac_dac1_mode_i|1:fpga hardcoded sequence<br>0:from dpram|Choose which sequence for PM signal
+|0    |fastdac_rng_mode_o     |fastdac_rng_mode_i |1:tRNG<br>0:dpram_rng|Choose which source of RNG
+
+##### slv_reg6 - R/W Access - Configuration
+|Bits |Signal name            |HW Wire      |Action/Value|Description
+|-----|-----------------------|-------------|------------|-----------
+|31:16|fastdac_amp_dac2_o     |fastdac_amp_dac2_i|-     |amplitude2 for PM signal
+|15:0 |fastdac_amp_dac2_o     |fastdac_amp_dac2_i|-     |amplitude3 for PM signal
+
+##### slv_reg7 - R/W Access - Configuration
+|Bits |Signal name            |HW Wire      |Action/Value|Description
+|-----|-----------------------|-------------|------------|-----------
+|31:15|-                      |-            |-           |Reserved 0
+|14:0 |fastdac_dpram_max<br>_addr_rng_dac1_o|fastdac_dpram_max<br>_addr_rng_dac1_i|-|dpram_rng max read address
+
+
+<!-- |Slave_reg      | Reg name                        | Description
 |---------------|---------------------------------|---------------
 |slv_reg0[0]    |fastdac_en_jesd_o                |Unused
 |slv_reg0[1]    |ld_ddr_status_o                  |Unused
@@ -80,8 +169,8 @@ Address of slv_reg(n) = 0x0003_0000 + 4 * n
 |slv_reg5[2]    |fastdac_fb_mode_o                |fb_mode
 |slv_reg5[3]    |fastdac_zero_mode_o              |zero_mode
 |slv_reg6[31:0] |fastdac_amp_dac2_o               |2 values of amp
-|slv_reg7[14:0] |fastdac_dpram_max_addr_rng_dac1_o|dpram_rng max ad
-
+|slv_reg7[14:0] |fastdac_dpram_max_addr_rng_dac1_o|dpram_rng max ad -->
+#### Programming note
 dpram_seqs: address range is 4096, maximum you can write 1024 words to each dpram
 
 ![dpram seq](pics/fastdac_dpram_seq.png)
