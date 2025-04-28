@@ -1,9 +1,10 @@
 %\documentclass[border={5pt, 15pt, 10pt, 5pt}, convert={density=300}]{standalone}
 \documentclass[border={5pt, 15pt, 10pt, 5pt}, convert={density=140}]{standalone}
 
-\usepackage[T1]{fontenc}
-\usepackage[default]{raleway}
+%\usepackage[T1]{fontenc}
+%\usepackage[default]{raleway}
 %\usefonttheme[onlymath]{serif}% raleway looks ugly in math; this uses standard serif math font
+\renewcommand{\familydefault}{\sfdefault}
 
 \usepackage{tikz, xcolor}
 \usetikzlibrary{shapes.geometric, backgrounds, positioning, decorations.markings} 
@@ -17,7 +18,7 @@
 \definecolor{vq_green_light}{RGB}{204,251,246}% green with 80% white added
 \definecolor{vq_blue}{RGB}{0,173,234}
 
-\pagecolor{white}
+%\pagecolor{white}
 
 \begin{document}
 

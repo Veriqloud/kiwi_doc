@@ -1,11 +1,12 @@
 ## PM-QKD
 
 Prepare and Measure protocol (PM-QKD) includes a QKD transmitter party Alice and a QKD receiver party Bob. Alice prepares and sends quantum states to Bob through a quantum channel. Bob measures the quantum states. The result (after post-processing) is a common final key available to Alice and Bob.
-![](pics/PM_QKD.jpg)
+
+![](pics/pm_qkd.svg)
 
 ## Time bin encoding
 
-![](pics/encoding.png)
+![](pics/encoding.svg)
 
 Alice uses a continuous wave laser, cuts out two pulses with an amplitude modulator and applies a differential phase to the two pulses. One of four phases is choosen randomly in BB84 fashion. Bob also applies a random phase, interferes the pulses using an umbalanced Mach-Zehnder interferometer and measures them on single-photon detector. More details are provided in the optics section.
 
@@ -20,17 +21,21 @@ The laser, detector, classical network and clock distribution is external.
 This way, development teams can use their own laser or detector to best suit their project. The protocol we run on the system is standard BB84 with time-bin encoding. 
 Other protocols can be implemented but might require modifications of the FPGA code and other components. 
 
-![](pics/system.png) 
+![](pics/system.svg) 
 
 Our network philosophy is to separate the quantum and the classical network. Routing on the quantum network must be done with minimal optical losses. A typical loss budget of such a system is only 20dB. The classical communication can happen over any ethernet (with reasonable latency).
 
 
-![](pics/Overview.jpg)
+![](pics/overview.svg)
+
 This is an overview of our open-source QKD system which provides a modular QKD architecture for current conventional communication systems. This architecture involves four layers (the physical hardware layer (PHY), the QKD Network Layer (Node), the key management service layer (KMS), the application layer). Each layer can be modified independently of the other ones for more flexibility. 
+
 - The application layer consists of user devices and applications, which make key requests to the Key Management Service (KMS) layer. These devices and applications use these keys to encrypt data in a secure way. 
 - The KMS layer obtains keys from the quantum network layer and distributes the keys to their designated hosts in  the application layer. The KMS layer must ensure the integrity and confidentiality of the keys.
 - The Quantum Network Layer (Node): executes all the post-processing steps on the keys produced from the physical layer to get final secure keys. It coordinates key routing between nodes and provides the keys directly to the KMS layer. 
 - The physical hardware layer (PHY) consists of the quantum channel and physical QKD hardware devices. These devices are responsable for generating the keys. After a key is produced, it is passed to Node where it is processed as described above. The PHY layer and Node share data through PCIe. 
+
+We make the physical hardware layer as well as Node open source. The KMS and applications remain closed source. 
 
 ## Post processing (done by Node)
 
