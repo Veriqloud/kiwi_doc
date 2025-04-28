@@ -12,22 +12,223 @@
 
 ![ddr4 overview](pics/ddr4_hier.png)
 
+## Port descriptions
+### axi_clock_converter_rtl.v
+This module instantiates AXI Clock Converter IP of Xilinx. Post description is in Xilinx datasheet.
+
+### axi_virtual_controller_wrapper.v
+This module instantiates AXI virtual Fifo Controller IP of Xilinx. Post description is in Xilinx datasheet.There are 3 optional ports for monitoring
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|counter_read[47:0]   |-         |O   |-           |number of read out of DDR AXI 
+|counter_write[47:0]  |-         |O   |-           |number of write in of DDR AXI 
+|delta_count[47:0]    |-         |O   |-           |number of write - number of read 
+
+### ddr4
+This is IP of Xilinx. All information is in Xilinx datasheet
+### ddr4_data.v
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|sr signals             |sr      |IO  |-           |match with mr interface of registers 
+|s_axis_tdata[255:0]    |s_axis  |I   |-           |stream of angles reading from AXI Virtual FIFO 
+|s_axis_tvalid          |s_axis  |I   |-           |valid indicator of angles reading from AXI Virtual FIFO 
+|s_axis_tready          |s_axis  |O   |-           |raise tready high when want to read angles from DDR 
+|s_axis_clk             |Clock   |I   |200MHz      |Reading stream of angles in clk200 domain (reset of interface is ddr_data_rstn) 
+|s_axis_tdata_gc[63:0]  |s_axis_gc|I  |-           |stream of gc reading from xdma_h2c to write to gc_in fifo
+|s_axis_tvalid_gc       |s_axis_gc|I  |-           |valid indicator of gc 
+|s_axis_tready_gc       |s_axis_gc|O  |-           |raise tready high when want to receive gc from xdma 
+|s_axis_gc_clk          |Clock   |I   |250MHz      |Reading stream of gc in clk250 domain  
+|s_gc_aresetn           |Reset   |I   |-           |Reset of xdma   
+|fifo_gc_full           |-       |O   |-           |full flag of gc_in fifo   
+|fifo_gc_empty          |-       |O   |-           |empty flag of gc_in fifo   
+|clk200_i               |Clock   |I   |200MHz      |clk200 
+|pps_i                  |-       |I   |-           |PPS from WRS for Alice capturing
+|ddr_data_rstn          |Reset   |I   |-           |reset in domain clk200, active LOW
+|rd_en_4                |-       |I   |-           |40MHz enable signal 
+|rng_data[3:0]          |-       |I   |-           |random PM angle to write to DDR4 
+|rng_a_data[1:0]        |-       |I   |-           |ramdom 2nd AM angle to write to DDR4
+|tvalid200              |-       |I   |-           |TDC time valid
+|tdata200[31:0]         |-       |I   |-           |TDC time value of click
+|tdata200_mod[15:0]     |-       |I   |-           |TDC time value of click modulo 625
+|gate_pos0/1/2/3[31:0]  |-       |I   |-           |softgate position to filter clicks
+|m_axis_tdata[255:0]    |m_axis  |O   |-           |stream of angles transmit to AXI Virtual FIFO 
+|m_axis_tvalid          |m_axis  |O   |-           |valid indicator of written angles from logic 
+|m_axis_tready          |m_axis  |I   |-           |Virtual FIFO raise high when it's ready to receive data 
+|m_axis_clk             |Clock   |I   |200MHz      |Writing to Virtual FIFO under clk200 domain (reset of interface is ddr_data_rstn) 
+|m_axis_tdata_gc[63:0]  |m_axis_gc|O  |-           |stream of gc+result write to gc_out AXIStream Fifo
+|m_axis_tvalid_gc       |m_axis_gc|O  |-           |valid indicator of gc+result 
+|m_axis_tready_gc       |m_axis_gc|I  |-           |Fifo raise high to receive data 
+|m_axis_gc_clk          |Clock   |I   |200MHz      |Write domain is 200MHz 
+|fifo_gc_rst            |Reset   |O   |-           |Reset for gc_out fifo, active HIGH   
+|m_axis_tdata_alpha[127:0]|m_axis_alpha|O  |-      |stream of PM + 2nd AM angles write to alpha_out AXIStream Fifo
+|m_axis_tvalid_alpha    |m_axis_alpha  |O  |-      |valid indicator of  angles
+|m_axis_tready_alpha    |m_axis_alpha  |I  |-      |Fifo raise high to receive data 
+|m_axis_alpha_clk       |Clock   |I   |200MHz      |Write domain is 200MHz 
+|fifo_alpha_rst         |Reset   |O   |-           |Reset for alpha_out fifo, active HIGH   
+|others ports           |-       |O   |-           |for debugging on ILA or external ports   
+
+
+
+### ddr_data_reg_mngt.v
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|axil signals         |s_axil    |IO  |-           |standard axilite interface for r/w registers 
+|s_axil_aclk          |Clock     |I   |15MHz       |clock for axil interface 
+|s_axil_aresetn       |Reset     |I   |-           |reset for axil interface, active LOW
+|pps_i                |-         |I   |-           |PPS from WRS for Alice capturing
+|ddr_fifos_status_i[8:0]|-       |I   |-           |status of Virtual FIFO
+|status_200_valid_i     |-       |I   |-           |valid indicator of VFIFO status
+|fifos_status_i[2:0]    |-       |I   |-           |status of fifos in clk250 domain
+|status_250_valid_i     |-       |I   |-           |valid indicator of status in clk250 
+|mr signals             |mr      |O   |-           |interface of registers(details in axil registers) 
+
+### mon_ddr_fifos.v
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|clk200_i             |Clock     |I   |200MHz      |clk200 
+|ddr_data_rstn        |Reset     |I   |-           |reset in domain clk200, active LOW
+|clk250_i             |Clock     |I   |250MHz      |clk250 
+|aresetn              |Reset     |I   |-           |reset in domain clk250, active LOW
+|vfifo_idle[1:0]      |-         |I   |bit 0:channel 1 <br> bit 1:channel 2|idle flags for 2 channels of Virtual FIFO
+|vfifo_full[1:0]      |          |I   |bit 0:channel 1 <br> bit 1:channel 2|full flags for 2 channels of Virtual FIFO
+|vfifo_empty[1:0]     |-         |I   |bit 0:channel 1 <br> bit 1:channel 2|empty flags for 2 channels of Virtual FIFO
+|gc_out_fifo_full     |-         |I   |-           |full flag of gc_out fifo
+|gc_out_fifo_empty    |-         |I   |-           |empty flag of gc_out fifo
+|gc_in_fifo_full      |-         |I   |-           |full flag of gc_in fifo
+|gc_in_fifo_empty     |-         |I   |-           |empty flag of gc_in fifo
+|alpha_out_fifo_full  |-         |I   |-           |full flag of alpha_out fifo
+|alpha_out_fifo_empty |-         |I   |-           |empty flag of alpha_out fifo
+|status_200_o[8:0]    |-         |O   |-           |status of flags in clk200 dmain
+|status_200_valid_o   |-         |O   |-           |indicator valid of status_200
+|status_250_o[2:0]    |-         |O   |-           |status of flags in clk250 dmain
+|status_250_valid_o   |-         |O   |-           |indicator valid of status_250
+
+### fifos_out.v
+This module instantiates 2 fifos: gc_out fifo and alpha fifo in AXIStream mode of FIFO Generator. Description of FIFO Generator is providded by Xilinx
+
 ## Axil registers
 
 - dq : double qubit, 40MHz
 - LSB : Least Significant Bit
 - MSB : Most Significant Bit
+- Base address: 0x0000_1000
+- Offset address slv_reg(n) : 4*n
 
-Tables of Registers for parameters, base is 0x0000_1000
+### slv_reg0 - R/W Access - Trigger Control
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:1|-                  |-                |-           |Reserved 0
+|0   |start_write_ddr_o  |mr_start_write_ddr_i  |Pull LOW to HIGH    |Trigger to start write to ddr
 
-Address of slv_reg(n) = 0x0000_1000 + 4 * n
+### slv_reg1 - R/W Access - Trigger Control
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:1|-                  |-                |-           |Reserved 0
+|0   |command_enable_o   |mr_command_enable_i  |Pull LOW to HIGH    |Trigger to get current gc
+
+### slv_reg2 - R/W Access - Configuration
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:4|-                  |-                |-           |Reserved 0
+|3   |command_gc_o       |mr_command_gc_i  |-           |Unused
+|2:0 |command_o          |mr_command_i     |3:read_angle<br>4:reset alpha fifo|set command to read_angle mode or reset alpha_out fifo
+
+### slv_reg3 - R/W Access - Trigger Control
+|Bits|Signal name             |HW Wire          |Action/Value|Description
+|----|------------------------|-----------------|------------|-----------
+|31:1|-                       |-                |-           |Reserved 0
+|0   |reg_enable_o            |mr_reg_enable_i  |Pull LOW to HIGH    |Enable register update
+
+### slv_reg4 - R/W Access - Configuration
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:0|dq_gc_start_lsb_o  |mr_dq_gc_start_lsb_i|-           |LSB of dq_gc, set to start save angles to alpha fifo
+
+### slv_reg5 - R/W Access - Configuration
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:16|-                 |-                |-           |Reserved 0
+|15:0|dq_gc_start_msb_o  |mr_dq_gc_start_msb_i|-           |MSB of dq_gc, set to start save angles to alpha fifo
+
+### slv_reg6 - R/W Access - Configuration & Trigger Control
+|Bits|Signal name             |HW Wire          |Action/Value|Description
+|----|------------------------|-----------------|------------|-----------
+|31:3|-                       |-                |-           |Reserved 0
+|2   |de_pair_delay_o     |mr_de_pair_delay_i   |-           |define if fiber delay [gc] % dq_gc = 0 or 1, for 2nd AM
+|1   |pair_delay_o        |mr_pair_delay_i      |-           |define if fiber delay [gc] % dq_gc = 0 or 1, for PM
+|0   |command_alpha<br>_enable_o|mr_command_alpha<br>_enable_i|Pull LOW to HIGH|Trigger to reset alpha fifo and save angles to fifo
+
+### slv_reg7 - R/W Access - Trigger Control
+|Bits|Signal name             |HW Wire          |Action/Value|Description
+|----|------------------------|-----------------|------------|-----------
+|31:1|-                       |-                |-           |Reserved 0
+|0   |command_gc<br>_enable_o     |mr_command_gc<br>_enable_i  |Pull LOW to HIGH    |Trigger to reset gc_out fifo and save gc to fifo
+
+### slv_reg8 - R/W Access - Configuration
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:0|threshold_o        |mr_threshold_i   |-           |number of clk200, define reading speed of gc_in fifo
+
+### slv_reg9 - R/W Access - Configuration
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:0|threshold_full_o   |mr_threshold_full_i   |-           |unused(used to debug size of ddr4)
+
+### slv_reg10 - R/W Access - Configuration
+
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:16|de_fiber_delay_o  |mr_de_fiber_delay_i|-|set alice_bob fiber delay [gc](only on Alice) found in calibration for 2nd AM, for reading angle out of DDR
+|15:0|fiber_delay_o  |mr_fiber_delay_i|-|set bob/alice_bob fiber delay [gc] (on Bob/Alice) found in calibration for PM,for reading angle out of DDR
+
+### slv_reg11 - R/W Access - Configuration
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:16|-                 |-                |-           |Reserved 0
+|15:0|ab_fiber_delay_o  |mr_ab_fiber_delay_i|-           |set alice_bob fiber delay [gc](only on Bob) found in calibration, to start output the gc+result
+
+### slv_reg12 - R Access - Monitoring
+|Bits|Signal name             |HW Wire          |Action/Value|Description
+|----|------------------------|-----------------|------------|-----------
+|31:1|-                       |-                |-           |Reserved 0
+|0   |pps_sync                |pps_sync  |-    |monitor PPS so that Alice can capture to send START command
+
+### slv_reg13 - R Access - Monitoring
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:9|-                  |-                |-           |Reserved 0
+|8:7|ddr_fifos_status_i   |vfifo_idle      |-           |idle flags of axi virtual fifo
+|6:5|ddr_fifos_status_i   |vfifo_full      |-           |full flags of axi virtual fifo
+|4:3|ddr_fifos_status_i   |vfifo_empty     |-           |empty flags of axi virtual fifo
+|2|ddr_fifos_status_i   |gc_out_fifo_full   |-           |full flag of gc_out fifo
+|1|ddr_fifos_status_i   |gc_in_fifo_empty   |-           |empty flag of gc_in fifo
+|0|ddr_fifos_status_i   |alpha_out_fifo_full|-           |full flag of alpha_out fifo
+
+### slv_reg14 - R Access - Monitoring
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:3|-                 |-                |-           |Reserved 0
+|2|fifos_status_i   |gc_out_fifo_empty   |-           |empty flag of gc_out fifo
+|1|fifos_status_i   |gc_in_fifo_full     |-           |full flag of gc_in fifo
+|0|fifos_status_i   |alpha_out_fifo_empty|-           |empty flag of alpha fifo
+
+### slv_reg15 - R Access - Monitoring
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:0|current_dq_gc_lsb_i   |current_dq_gc_lsb_i   |-           |monitors the LSB of current dq
+
+### slv_reg16 - R Access - Monitoring
+|Bits|Signal name        |HW Wire          |Action/Value|Description
+|----|-------------------|-----------------|------------|-----------
+|31:16|-                 |-                |-           |Reserved 0
+|15:0|current_dq_gc_msb_i   |current_dq_gc_msb_i   |-           |monitors the MSB of current dq
 
 
-|axil registers	|Dir|Signal                 | Description
+<!-- |axil registers	|Dir|Signal                 | Description
 |---------------|---|-----------------------|--------------------------------------------------
 |slv_reg0[0]	|O 	|start_write_ddr_o		|set this 0 to 1 to start write to ddr at next pps
 |slv_reg1[0]	|O 	|command_enable_o		|set this 0 to 1 to get current dq
-|slv_reg2[2:0]	|O 	|command_o				|set command to read_angle mode or reset alpha_out fifo
+|slv_reg2[2:0]	|O 	|command_o			|set command to read_angle mode or reset alpha_out fifo
 |slv_reg2[3]	|O 	|command_gc_o			|unused
 |slv_reg3[0]	|O 	|reg_enable_o			|set this 0 to 1 to load others regs
 |slv_reg4[31:0]	|O 	|dq_gc_start_lsb_o		|set the LSB of current dq
@@ -38,14 +239,14 @@ Address of slv_reg(n) = 0x0000_1000 + 4 * n
 |slv_reg7[0]	|O 	|command_gc_enable_o	|set this 0 to 1 to reset gc_out fifo and get data 
 |slv_reg8[31:0]	|O 	|threshold_o			|number of clk200, define reading speed of gc_in fifo
 |slv_reg9[31:0]	|O 	|threshold_full_o		|unused(used to debug size of ddr4)
-|slv_reg10[15:0]|O 	|fiber_delay_o			|set bob/alice_bob fiber delay [gc] found in calibration for PM, both on Alice and Bob,for reading angle out of DDR
-|slv_reg10[31:16]|O |de_fiber_delay_o		|set alice_bob fiber delay [gc] found in calibration for 2nd AM, only on Alice, for reading angle out of DDR
-|slv_reg11[15:0]|O 	|ab_fiber_delay_o		|set alice_bob fiber delay [gc] found in calibration, only on Bob to start output the gc+result
+|slv_reg10[15:0]|O 	|fiber_delay_o			|set bob/alice_bob fiber delay [gc] (on Bob/Alice) found in calibration for PM,for reading angle out of DDR
+|slv_reg10[31:16]|O |de_fiber_delay_o		|set alice_bob fiber delay [gc](only on Alice) found in calibration for 2nd AM, for reading angle out of DDR
+|slv_reg11[15:0]|O 	|ab_fiber_delay_o		|set alice_bob fiber delay [gc](only on Bob) found in calibration, to start output the gc+result
 |slv_reg12[0]   |I 	|pps_sync       		|monitor PPS so that Alice can capture to send START command
 |slv_reg13[8:0] |I 	|ddr_fifos_status_i		|includes idle, empty and full flags of virtual fifo controller
 |slv_reg14[2:0] |I 	|fifos_status_i			|includes full and empty flags of gc_out, alpha_out, gc_in fifos
 |slv_reg15[31:0]|I 	|current_dq_gc_lsb_i	|monitors the LSB of current dq 
-|slv_reg16[16:0]|I 	|current_dq_gc_msb_i	|monitors the MSB of current dq
+|slv_reg16[16:0]|I 	|current_dq_gc_msb_i	|monitors the MSB of current dq -->
 
 
 ## Data flow
@@ -60,7 +261,7 @@ To make sure START command is not close to rising edge of PPS, Alice will reques
 #### WRITE MANAGEMENT
 In START state, start to count up double global counter and write angles to DDR4. Angles are written as axistream data to AXI Virtual FIFO controller IP. This IP manages the memory map in the MIG, when you want to write or read from DDR4, you just need to manage write/read axistream of AXI Virtual FIFO controller.
 
-The angle include angle for PM and angle for the second AM.
+The angle includes angle for PM and angle for the second AM.
 Dedicate 8bits to encode:
 - 4 LSB : for PM angle
 - next 2 bits : for 2nd AM angle
@@ -149,15 +350,15 @@ List of commands
 
 |step| Alice|Bob|expect|
 |----|------|---|------|
-| 1  |      												| python -u server_ctl.py  		 | 
-|    | python client_ctl.py init sp fg 						|                          		 | histogram is good
-| 2  |                                  					| python -u server_ctl.py  		 | 
-|    | python client_ctl.py fd_b        					|                          		 | 34 q_bins                
-| 3  |                                  					| python main.py bob --pol_ctl   |
-| 4  |                                  					| python -u server_ctl.py        |                          
-|    | python client_ctl.py fd_a_mod    					|                                | 15 q_bins                
-| 5  |                                  					| python -u server_ctl.py        |                          
-|    | python client_ctl.py fd_a        					|                                | 4032 q_bins (10km fiber) 
+| 1  |      							| python -u server_ctl.py  		 | 
+|    | python client_ctl.py init sp fg 				|                          		 | histogram is good
+| 2  |                                  			| python -u server_ctl.py  		 | 
+|    | python client_ctl.py fd_b        			|                          		 | 34 q_bins                
+| 3  |                                  			| python main.py bob --pol_ctl   |
+| 4  |                                  			| python -u server_ctl.py        |                          
+|    | python client_ctl.py fd_a_mod    			|                                | 15 q_bins                
+| 5  |                                  			| python -u server_ctl.py        |                          
+|    | python client_ctl.py fd_a        			|                                | 4032 q_bins (10km fiber) 
 | 6  | python main.py alice --ddr_data_reg 4 0 1999 0 0    	| python main.py bob --ddr_data_reg 4 0 1999 0 0     |                       
 |    | python main.py alice --ddr_data_reg 3 0 1999 1992 0 	| python main.py bob --ddr_data_reg 3 4000 1999 17 1 |                       
 |    | python main.py alice --ddr_data_init                	| python main.py bob --ddr_data_init                 |                       
