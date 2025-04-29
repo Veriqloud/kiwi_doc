@@ -1,11 +1,12 @@
-%\documentclass[border={5pt, 15pt, 10pt, 5pt}, convert={density=400}]{standalone}
-\documentclass[border={5pt, 15pt, 10pt, 5pt}, convert={density=140}]{standalone}
+\documentclass[border=3mm, convert={density=400}]{standalone} %left bottom rigth top
+%\documentclass[convert={density=140}]{standalone}
+%\documentclass{standalone}
 
 %\usepackage[T1]{fontenc}
 %\usepackage[default]{raleway}
 %\usefonttheme[onlymath]{serif}% raleway looks ugly in math; this uses standard serif math font
 
-\renewcommand{\familydefault}{\sfdefault}
+%\renewcommand{\familydefault}{\sfdefault}
 
 \usepackage{tikz, xcolor}
 \usetikzlibrary{shapes.geometric, backgrounds, positioning, decorations.markings} 
@@ -18,14 +19,15 @@
 \definecolor{vq_green}{RGB}{0,235,210}
 \definecolor{vq_green_light}{RGB}{204,251,246}% green with 80% white added
 \definecolor{vq_blue}{RGB}{0,173,234}
+\definecolor{vq_grey}{RGB}{225,225,219}
 
-%\pagecolor{white}
+\pagecolor{vq_grey}
 
 \begin{document}
 
 
 
-\begin{tikzpicture}
+\begin{tikzpicture}%[text=vq_grey]
     \node (l) at (0,1) {Laser};
     \node (am) at (0,0) {AM1};
     \node (am2) at (2,0) {AM2};

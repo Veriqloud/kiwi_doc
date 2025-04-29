@@ -16,7 +16,7 @@
 | ~/qline/hw-control/result.f     | measurement result (on Bob only)                                      | unix fifo; each byte a result                                    | `node`, `qber_client` / `qber_server`                                                          |
 
 The dataflow when you run `qber_client`
-![](pics/rust_qber_scheme.png)
+![](pics/rust_qber_scheme.svg)
 
 ## Programs and control scripts
 

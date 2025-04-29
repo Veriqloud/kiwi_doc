@@ -1,16 +1,19 @@
 \documentclass[10pt, border=3mm]{standalone}
-\usepackage{pstricks-add}
+%\usepackage{pstricks-add}
 \usepackage{tikz}
 \usetikzlibrary{positioning, calc, graphs}
+
+\definecolor{vq_grey}{RGB}{225,225,219}
+\pagecolor{vq_grey}
 
 \begin{document}
 
 \begin{tikzpicture}[block/.style={rectangle,draw,minimum height=1.5cm,text width=2.6cm,align=center},node distance = 12mm , block2/.style={-, rectangle,draw,minimum height=5cm,text width=20cm,align=center}  ]
-\node (b1) [block] {\textbf{Optical filter}} ;
-\node (b2) [block, right=of b1] {\textbf{Polarization Modulator}};
-\node (b3) [block,right=of b2] {\textbf{In Line Polarizer}};
-\node (b4) [block, fill=pink!20,right=of b3] {\textbf{Phase Modulator}} ;
-\node (b5) [block, fill=blue!60, right=of b4] {\textbf{Interferometer}} ;
+\node (b1) [block, fill=white] {\textbf{Optical filter}} ;
+\node (b2) [block, right=of b1, fill=white] {\textbf{Polarization Modulator}};
+\node (b3) [block,right=of b2, fill=white] {\textbf{In Line Polarizer}};
+\node (b4) [block, fill=pink!40,right=of b3] {\textbf{Phase Modulator}} ;
+\node (b5) [block, fill=blue!30, right=of b4] {\textbf{Interferometer}} ;
 \node (b6) [block,right=of b5, fill=pink] {\textbf{External Single Photon Detector}} ;
 \node (b15) [block2] at (8,-1.5) {};
   \begin{scope}

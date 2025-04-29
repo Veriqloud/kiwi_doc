@@ -1,9 +1,9 @@
-targets = encoding.svg pm_qkd.svg system.svg overview.svg
+targets = encoding.svg pm_qkd.svg system.svg overview.svg optics_alice.svg optics_bob.svg rust_qber_scheme.svg
 
 all: $(targets)
 
 %.svg: %.dvi
-	dvisvgm --no-font --exact --zoom=1.4 $<
+	dvisvgm --font-format=WOFF2 --exact --zoom=1.4 --bbox=papersize $<
 	rm $<
 
 %.dvi: %.tex

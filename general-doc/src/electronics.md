@@ -2,7 +2,7 @@
 
 Remind you this is overview of our open-source QKD system
 
-![QKD system](pics/Overview.jpg)
+![QKD system](pics/overview.svg)
 
 PHY layer is in charge of generating the keys. Then keys are passed to Node. So PHY layer includes:
 - Physical hardware

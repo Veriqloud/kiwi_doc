@@ -1,17 +1,20 @@
 \documentclass[10pt, border=3mm]{standalone}
-\usepackage{pstricks-add}
+%\usepackage{pstricks-add}
 \usepackage{tikz}
 \usetikzlibrary{positioning, calc, graphs}
+
+\definecolor{vq_grey}{RGB}{225,225,219}
+\pagecolor{vq_grey}
 
 \begin{document}
 
 \begin{tikzpicture}[block/.style={rectangle,draw,minimum height=1.5cm,text width=2cm,align=center},node distance = 15mm , block2/.style={-, rectangle,draw,minimum height=6cm,text width=18cm,align=center} ]
-\node (b1) [block, fill=blue!20] {\textbf{External Laser}};
-\node (b2) [block, fill=pink!20, right=of b1] {\textbf{Amplitude Modulator}};
-\node (b3) [block, fill=pink!20,right=of b2]  {\textbf{Phase Modulator}};
-\node (b4) [block,right=of b3] {\textbf{Optical Filter}} ;
-\node (b5) [block,right=of b4] {\textbf{Variable Attenuator}} ;
-\node (b6) [block,right=of b5] {\textbf{Manual Attenuator}};
+\node (b1) [block, fill=blue!30] {\textbf{External Laser}};
+\node (b2) [block, fill=pink!40, right=of b1] {\textbf{Amplitude Modulator}};
+\node (b3) [block, fill=pink!40,right=of b2]  {\textbf{Phase Modulator}};
+\node (b4) [block,right=of b3, fill=white] {\textbf{Optical Filter}} ;
+\node (b5) [block,right=of b4, fill=white] {\textbf{Variable Attenuator}} ;
+\node (b6) [block,right=of b5, fill=white] {\textbf{Manual Attenuator}};
 \node (b15) [block2] at (11,-1.5) {};
   \begin{scope}
     \draw [-, orange, very thick] (b1) -- (b2);
