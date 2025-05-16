@@ -23,14 +23,14 @@
     \node[color=blue] (xdmaa) at (-3.5, 0) {/dev/xdma0\_user};
     \node[color=blue] (xdmab) at (11.5, 0) {/dev/xdma0\_user};
 
-    \node(gcc) at (0,-1) {\textbf{gc\_client}};
-    \node(gcs) at (8,-1) {\textbf{gc\_server}};
+    \node(gcc) at (0,-1) {\textbf{gc}};
+    \node(gcs) at (8,-1) {\textbf{gc}};
 
     \draw[<->] (gcc) -- (gcs) node(tcp)[below, midway, align=center]{TCP\\$\rightarrow$ \textcolor{teal}{start} \\$\leftarrow$ \textcolor{magenta}{gc}};
 
     
-    \node(qberc) at (0,-5) [align=center] {\textbf{qber\_client}\\printing qber};
-    \node(qbers) at (8,-5) {\textbf{qber\_server}};
+    \node(qberc) at (0,-5) [align=center] {\textbf{qber}\\printing qber};
+    \node(qbers) at (8,-5) {\textbf{qber}};
     
     \node[color=blue] (aa) at (-4,-5) {/dev/xdma0\_c2h\_3};
     \draw[->] (aa) -- (qberc) node[midway, above]{\textcolor{magenta}{angles}};
