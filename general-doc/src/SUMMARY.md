@@ -26,6 +26,7 @@
 
 - [Files and Scripts](files_and_scripts.md)
 - [Running the System](running_the_system.md)
+- [Client setup](client_setup.md)
 
 # QKD basics
 
