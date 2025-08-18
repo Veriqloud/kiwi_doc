@@ -1,8 +1,5 @@
 # Hardware Testing
-
-
-Just some guidelines for hardware testing. 
-
+This is intructions to test electronics chips only. Validation by verify signals and registers outputs
 ## Labequipment you might need
 
 - Oscilloscope with sufficient bandwidth (e.g. Siglent SDS5034X 4Ch 350MHz 5GSa/s; or better)
@@ -12,10 +9,6 @@ Just some guidelines for hardware testing.
 - fast photodiode
 - soldering lab
 - optical fibers and attenuators
-
-## Build the hardware boxes
-
-Some pictures for instructions
 
 ## Electronics testing
 This procedure is for individual test, on single node
@@ -157,18 +150,15 @@ python main.py alice --de_add_delay_s2
 ### DDR4	
 The purpose is to check corresponding of read angle and received global counter. You need:
 - Write the fix sequence of RNG to dpram rng (depends on your click rate to decide the length of sequence)
-- Generate simulated STOPA signal for TDC. You should know value of global counter at the click event, and corresponding angle. For example 50kHz signal
+- Generate simulated STOPA signal for TDC. You should know value of global counter at the click event, and corresponding angle. For example 1kHz signal
 ```
-python main.py bob --sim_stop_pulse 5 21
+python main.py bob --sim_stop_pulse 250 21
 python main.py bob --time_calib_init
 ```
 You can use ILA to trigger signals you want to observe
 - Make a loop test on DDR4 
 ```
-python main.py bob --ddr_data_reg  4 0 1999 0 0 
-python main.py bob --ddr_data_reg  3 4000 1999 17 1
-python main.py bob --ddr_data_init 
-python main.py bob --get_gc 
+python ddr_loop_test.py
 ```
 - Check status of fifos in another process
 ```
@@ -180,7 +170,7 @@ python main.py bob --angle
 ```
 - you can process the output angles to check if it's correlated to global counter
 ## Physics experiments
-After passing the electronics tests, you can connect electrical signals to optical components and do some experiments
+After passing the electronics tests, you can connect electrical signals to optical components and do experiments, calibrations
 
 
 
