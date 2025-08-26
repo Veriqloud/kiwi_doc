@@ -1,10 +1,50 @@
 # Running the System
 
-## ssh setup
+## Basic admin controlling a configured system (no ssh to the system requred)
 
-You need ssh access to Alice and Bob. 
+Clone repo `git@github.com:Veriqloud/kiwi_hw_control.git`
 
-Put this into your `~/.ssh/config`:
+Power on the system
+
+- power on the White Rabbit Switches, wait about 20sec for lights to flash 
+- power on the VQ box, this will power on the FPGA board 
+- power on the computer by pressing the button on the back of the box (or wakeonlan over the netowk)
+
+
+Point the scripts to the appropriate `network.json`
+
+```.bash
+export QLINE_CONFIG_DIR=path_to/kiwi_hw_control/config/qline1
+```
+
+Go to `kiwi_hw_control/qline_clean/local`. This is the folder from which you can initialize and calibrate the system. There are three programs:
+- `hw_alice.py` / `hw_bob.py` to change and get the current hardware parameters (check their help messages)
+- `hws.py` to calibrate the system, i.e. Alice and Bob at the same time. 
+- `mon.py` to get the status and plot counts or gates
+
+Run 
+
+```.bash
+mon.py --status
+``` 
+
+to get basic info on the system
+
+If you are lucky,
+
+```.bash
+hws.py --full_init  
+```
+
+is all you need. This might take up to two minutes. If you get a fail message, try again. 
+
+
+
+
+
+## ssh setup (required for development, deployment and debugging)
+
+Put something like this into your `~/.ssh/config`:
 
 ```
 Host Alice
@@ -40,7 +80,7 @@ Host RemoteAlice
         ControlPersist 1h
 
 Host RemoteBob
-    ProxyCommand ssh vq nc ql001 22
+    ProxyCommand ssh vq nc ql002 22
     User vq-user
     IdentityFile ~/.ssh/your_ssh_key
     ControlPath ~/.ssh/controlmasters/%r@%h:%p
@@ -49,50 +89,34 @@ Host RemoteBob
 
 ```
 
-The last three entries are for connecting from the internet through the VQ server.
+The last three entries are for connecting from the internet through port forwarding on the VQ server.
 
-Ask someone to copy your ssh public key onto the machines. 
-
-
-## Control the hardware
+Make sure your public key is on the machines, e.g. `ssh-copy-id vq-user@ql001.home`
 
 
-clone repo `git@github.com:Veriqloud/kiwi_hw_control.git`
+## Manually optimizing the qber
 
-ssh onto Alice and Bob and run the servers
-
-```bash
-cd ~/qline/server
-hw.py &
-hws.py & # first on Bob then on Alice
-gc -c ../config/gc.json & # first on Bob then on Alice
-```
-
-on your personal computer go the the `kiwi_hw_control/qline_clean/local`. This is the folder from which you can initialize and calibrate the system. There are two programs:
-- `hw_alice.py` / `hw_bob.py` to change and get the current hardware parameters (check their help messages)
-- `hws.py` to calibrate the system, i.e. Alice and Bob at the same time. 
-
-If you are lucky,
-
-```.bash
-hws.py --full_init  
-```
-
-is all you need. This might take up to two minutes. If you get a fail message, try again. If you get a fail message again, contact the admin:)
+ssh on the systems
 
 You can check with `qber` that the system is running fine:
 
 On Bob
 ```.bash
-qber -f ../config/qber.json 
+cd servers
+qber 
 ```
 
 On Alice
 ```.bash
-qber -f ../config/qber_fifo_alice.json -n ../config/qber_net_alice.json 6400
+qber 6400
 ```
 
-This will print the correlation matrix and the qber. Some final commands:
+This will print the correlation matrix of the relative count rates for all the 4x4 possible angle choices.
+
+On your local machine run `hw_alice.py` and `hw_bob.py` to change parameters.
+
+## Misc
+
 
 ```.bash
 hw_alice.py set --fake_rng_seq [off, random]
