@@ -1,4 +1,4 @@
-targets = encoding.svg pm_qkd.svg system.svg overview.svg optics_alice.svg optics_bob.svg rust_qber_scheme.svg
+targets = encoding.svg pm_qkd.svg system.svg overview.svg optics_alice.svg optics_bob.svg rust_qber_scheme.svg network.svg
 
 all: $(targets)
 

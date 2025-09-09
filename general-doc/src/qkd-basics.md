@@ -1,8 +1,8 @@
 ## What is QKD
 
-Quantum Key Distribution [ref review] generates a random string for two players Alice and Bob. 
+Quantum Key Distribution [[Xu_2020](http://arxiv.org/abs/1903.09051)] generates a random string for two players Alice and Bob. 
 Physics guarantees that under some assumptions an evesdropper Eve cannot know anything about that string. 
-The security of QKD can be formally proven [ref Tomamichel_2017]. 
+The security of QKD can be formally proven [[Tomamichel_2017](http://quantum-journal.org/papers/q-2017-07-14-14/)]. 
 However, any actual implementation of QKD is vulnerable to attacks that exploit imperfections such as information leakage into side channels. 
 Proper security analysis and countermeasures against known attacks are thus also part of a QKD system. 
 

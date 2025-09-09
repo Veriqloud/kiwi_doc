@@ -4,38 +4,38 @@
 ## Files for communication between OS and FPGA or between processes
 
 
-| name                            | meaning                                                               | type                                                             | used by                                                                                        |
-| ----                            | ----                                                                  | ----                                                             | ----                                                                                           |
-| /dev/xdma0_user                 | FPGA registers for control and monitoring                             | memory map; addresse with respect to bytes, values 4bytes=32bit  | `main_Alice.py` / `main_Bob.py`, `client_ctl.py` / `server_ctl.py`, `gc_client` / `gc_server`  |
-| /dev/xdma0_c2h_0                | global counter (qubit identifier) and click result of detected qubit  | FPGA to OS fifo 128bit/word                                      | `gc_server`                                                                                    |
-| /dev/xdma0_h2c_0                | global counter of detected qubit                                      | OS to FPGA fifo 128bit/word                                      | `gc_client`, `gc_server`                                                                       |
-| /dev/xdma0_h2c_1                | RNG values                                                            | OS to FPGA fifo 128bit/word                                      |                                                                                                |
-| /dev/xdma0_c2h_2                | TDC timestamps, global counter, click result for calibration          | FPGA to OS fifo 128bit/word                                      | `main_Bob.py`,  `server_ctl.py`                                                                |
-| /dev/xdma0_c2h_3                | angles (rng values of detected qubits)                                | FPGA to OS fifo 128bit/word                                      | `node`, `qber_client` / `qber_server`                                                          |
-| ~/qline/hw-control/startstop.s  | start and stop the raw key generation                                 | unix stream; each byte a command                                 | `node`, `qber_client`                                                                          |
-| ~/qline/hw-control/result.f     | measurement result (on Bob only)                                      | unix fifo; each byte a result                                    | `node`, `qber_client` / `qber_server`                                                          |
+| name                            | meaning                                                               | type                                                             | used by                                     |
+| ----                            | ----                                                                  | ----                                                             | ----                                        |
+| /dev/xdma0_user                 | FPGA registers for control and monitoring                             | memory map; addresse with respect to bytes, values 4bytes=32bit  | `hw_alice.py` / `hw_bob.py`, `hws.py` `gc`  |
+| /dev/xdma0_c2h_0                | global counter (qubit identifier) and click result of detected qubit  | FPGA to OS fifo 128bit/word                                      | `gc`                                        |
+| /dev/xdma0_h2c_0                | global counter of detected qubit                                      | OS to FPGA fifo 128bit/word                                      | `gc`                                        |
+| /dev/xdma0_h2c_1                | RNG values                                                            | OS to FPGA fifo 128bit/word                                      |                                             |
+| /dev/xdma0_c2h_2                | TDC timestamps, global counter, click result for calibration          | FPGA to OS fifo 128bit/word                                      | `hws.py`,  `hw_bob.py`                      |
+| /dev/xdma0_c2h_3                | angles (rng values of detected qubits)                                | FPGA to OS fifo 128bit/word                                      | `node`, `qber`                              |
+| ~/qline/hw-control/startstop.s  | start and stop the raw key generation                                 | unix stream; each byte a command                                 | `node`, `qber`                              |
+| ~/qline/hw-control/result.f     | measurement result (on Bob only)                                      | unix fifo; each byte a result                                    | `node`, `qber                               |
 
-The dataflow when you run `qber_client`
+The dataflow when you run `qber`
 ![](pics/rust_qber_scheme.svg)
 
 ## Programs and control scripts
 
-| name                                            | meaning                                                                                                                                      |
-| ----                                            | ----                                                                                                                                         |
-| `main_Alice.py`; `main_Bob.py`                  | manually change hardware settings individually on Alice and Bob (see help message of the sript)                                              |
-| `client_ctl.py` (Alice); `server_ctl.py` (Bob)  | hardware init procedures controlled by Alice                                                                                                 |
-| `gc_client` (Alice); `gc_server` (Bob)          | background process to send gc from Bob to Alice and start/stop raw key generation; gc_client is waiting for start/stop from another program  |
-| `qber_client` (Alice); `qber_server` (Bob)      | calculate qber (for calibration only)                                                                                                        |
-| `node`                                          | send start/stop to gc_client; process raw key to final key (qber estimation, error correction, privacy amplification)                        |
-| `kms`                                           | key management service; takes key from `node`                                                                                                |
+| name                        | meaning                                                                                                                                      |
+| ----                        | ----                                                                                                                                         |
+| `hw_alice.py`; `hw_bob.py`  | manually change hardware settings individually on Alice and Bob (see help message of the sript)                                              |
+| `hws.py`                    | hardware init procedures controlled by Alice                                                                                                 |
+| `gc`                        | background process to send gc from Bob to Alice and start/stop raw key generation; gc_client is waiting for start/stop from another program  |
+| `qber`                      | calculate qber (for calibration only)                                                                                                        |
+| `node`                      | send start/stop to gc_client; process raw key to final key (qber estimation, error correction, privacy amplification)                        |
+| `kms`                       | key management service; takes key from `node`                                                                                                |
 
 ## Config files
 
 | name                 | meaning                     |  edited by        |
 | ----                 | ----                        | ----            |
-| config/defaults.txt  | initial hardware parameters  | Admin   |
-| config/tmp.txt  | running hardware parameters  | `client_ctl.py` / `server_ctl.py` and `main_Alice.py` / `main_Bob.py`  |
-| config/ip.json  | ip addresses of the network  | Admin  |
+| ~/hw_control/config/defaults.txt  | initial hardware parameters  | Admin   |
+| ~/hw_control/config/tmp.txt  | running hardware parameters  | `hw_bob.py` / `hw_alice.py`, `hws.py`,   |
+| ~/config/  | high level configuration for all programs  | Admin (through gen_config)  |
 
 
 Meaning of paramters in config/defaults.txt and config/tmp.txt:

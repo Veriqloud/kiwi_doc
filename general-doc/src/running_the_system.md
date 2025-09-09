@@ -1,5 +1,13 @@
 # Running the System
 
+## Network
+
+There are two networks. One for the client and one for communication between Alice and Bob. 
+
+![](pics/network.svg)
+
+
+
 ## Basic admin controlling a configured system (no ssh to the system requred)
 
 Clone repo `git@github.com:Veriqloud/kiwi_hw_control.git`
