@@ -14,21 +14,24 @@ For decoy state QKD the amplitude of the double pulse is chosen randomly from a 
 
 ## Our technological approach
 
-We try to adopt a modular design. 
+We adopt a modular design. 
 The heart of the system is the VQ Card performing real time digital processing and analog control. 
-This card together with the PC, some electronics and the optics is in a rack mountable enclosure. 
-The laser, detector, classical network and clock distribution is external. 
+This card together with the computer, some electronics and the optics is in a rack mountable enclosure. 
+The classical network and clock distribution is external and must be provided for the system. 
+The laser and detector are inside the encosure by default but can be made external for flexibility. 
 This way, development teams can use their own laser or detector to best suit their project. The protocol we run on the system is standard BB84 with time-bin encoding. 
 Other protocols can be implemented but might require modifications of the FPGA code and other components. 
+The computer we use is a fairly powerful standard PC to leave room for custom postprocessing applications.
 
 ![](pics/system.svg) 
 
-Our network philosophy is to separate the quantum and the classical network. Routing on the quantum network must be done with minimal optical losses. A typical loss budget of such a system is only 20dB. The classical communication can happen over any ethernet (with reasonable latency).
+Our network philosophy is to separate the quantum and the classical network. The classical communication can happen over any ethernet connection. The reason behind this choice is that routing on the quantum network must be done with minimal optical losses. 
+Coprapagation of the classical and the quantum signal on the same network inevitably increases the losses as well as the complexity. Nevertheless, shared networks are possible with proper filter designs. However, they depend strongly on the topologies and requirements of the operator. Such setups have not been tested with this system yet. 
 
 
 ![](pics/overview.svg)
 
-This is an overview of our open-source QKD system which provides a modular QKD architecture for current conventional communication systems. This architecture involves four layers (the physical hardware layer (PHY), the QKD Network Layer (Node), the key management service layer (KMS), the application layer). Each layer can be modified independently of the other ones for more flexibility. 
+This is an overview of the logical levels. This architecture involves four layers (the physical hardware layer (PHY), the QKD Network Layer (Node), the key management service layer (KMS), the application layer). Each layer can be modified independently of the other ones for more flexibility. 
 
 - The application layer consists of user devices and applications, which make key requests to the Key Management Service (KMS) layer. These devices and applications use these keys to encrypt data in a secure way. 
 - The KMS layer obtains keys from the quantum network layer and distributes the keys to their designated hosts in  the application layer. The KMS layer must ensure the integrity and confidentiality of the keys.

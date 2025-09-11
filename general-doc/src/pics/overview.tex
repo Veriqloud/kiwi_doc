@@ -15,13 +15,14 @@
 \node (b11) [block] at (0,1.5) {NODE};
 \node (b12) [block] at (0,2) {KMS};
 \node (b13) [block] at (0,2.51) {APP};
-\node (b14) [draw] at (2,2) {\rotatebox{90}{\footnotesize{NETWORK}}};
+%\node (b14) [draw] at (2,2) {\rotatebox{90}{\footnotesize{NETWORK}}};
+\node[draw] (network) at (5,2) {\footnotesize{NETWORK}};
 \node (b15) [block2] at (0.6,1) {};
 \node (b2) [block] at (9,0) {PHY};
 \node (b21) [block] at (9,1.5) {NODE};
 \node (b22) [block] at (9,2) {KMS};
 \node (b23) [block] at (9,2.51) {APP};
-\node (b24) [draw] at (11,2) {\rotatebox{90}{\footnotesize{NETWORK}}};
+%\node (b24) [draw] at (11,2) {\rotatebox{90}{\footnotesize{NETWORK}}};
 \node (b25) [block2] at (9.5,1) {};
   \begin{scope}
     \draw [<->, green] ([xshift=0cm]b1.north) -- ([xshift=0cm]b11.south) node [pos=0.5,right, black] {PCIe} ;
@@ -30,8 +31,8 @@
   \begin{scope}
    % \draw[double distance=20pt] (b1) -- node [sloped, above] {\small{Quantum channel }} (b2);
     \draw [-, orange, very thick] ($(b1.west)+(1.95,0)$) -- node [below, pos=0.58, black] {\small{Quantum communication }} ($(b2.east)+(-1.95,0)$);
-    \draw [<->, green] ([yshift=0cm]b12) -- ([yshift=0cm]b14) node [below, pos=0.5, black] {Eth};
-    \draw [<->, green] (b22) -- (b24) node [below, pos=0.5, black] {Eth};
+    \draw [<->, green] ([yshift=0cm]b12) -- ([yshift=0cm]network) node [below, pos=0.3, black] {Eth};
+    \draw [<->, green] (b22) -- (network) ;
     \node (input) at (0.5,-0.8){$\mathbf{Alice}$};
     \node (input) at (9.5,-0.8) {$\mathbf{Bob}$};
   \end{scope}

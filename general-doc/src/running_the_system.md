@@ -8,6 +8,8 @@ There are two networks. One for the client and one for communication between Ali
 
 In standard operation, the admin is on the client network and uses scripts on his local computer to communicate with the devices. These scripts are TCP-clients that connect to servers on the machines and send/receive messages and data.
 
+In standard operation, the client uses the [ETSI14](https://portal.etsi.org/webapp/workprogram/Report_WorkItem.asp?WKI_ID=53603) standard to get the key via http(s).
+
 For development and debugging you can connect through ssh and operate directly on the machines. 
 
 

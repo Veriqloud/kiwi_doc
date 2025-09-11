@@ -17,6 +17,7 @@
 \definecolor{vq_green}{RGB}{0,235,210}
 \definecolor{vq_green_light}{RGB}{204,251,246}% green with 80% white added
 \definecolor{vq_blue}{RGB}{0,173,234}
+\definecolor{vq_blue_dark}{RGB}{0,86,117}
 \definecolor{vq_grey}{RGB}{225,225,219}
 
 \pagecolor{vq_grey}
@@ -27,26 +28,26 @@
 
 %\begin{tikzpicture}[background rectangle/.style={fill=vq_background}, show background rectangle]
 \begin{tikzpicture}
-    \node (pc) at (0,0) {PC};
-    \node[fill=vq_green, minimum size = 1cm, rounded corners = 0.1cm] (vqc) at (2,0) [align=center] {VQ\\motherboard};
-    \node (amps) at (4,0) {Amps};
-    \node (oa) at (2,1.5) {Optics Alice};
-    \node (ob) at (2,-1.5) {Optics Bob};
-    \draw[thick] (-1, -2) rectangle (5, 2);
-    \draw (-1, -1) -- (5,-1);
-    \draw (-1, 1) -- (5,1);
+    \node (Computer) at (0,0) {Computer};
+    \node[fill=vq_green, minimum size = 1cm, rounded corners = 0.1cm] (vqc) at (3,0) [align=center] {VQ\\motherboard};
+    \node (amps) at (6,0) {Amplifiers};
+    \node (oa) at (3,1.5) {Optics};
+    %\node (ob) at (2,-1.5) {Optics Bob};
+    \draw[thick, rounded corners = 0.05cm, vq_blue_dark] (-1, -1) rectangle (7, 2);
+    %\draw (-1, -1) -- (5,-1);
+    \draw (-1, 1) -- (7,1);
 
-    \node (laser) at (-2, 1.5) {Laser};
-    \node (detector) at (-2, -1.5) {Detector};
+    %\node (laser) at (-2, 1.5) {Laser};
+    %\node (detector) at (-2, -1.5) {Detector};
 
     \node (eth) at (-2,0.5) {Ethernet};
     \node (clk) at (-2,-0.5) {Clock};
 
 
-    \draw[orange, thick, ->] (5,1.5) -- (5.6,1.5) node[above, midway, black] {TX};
-    \draw[orange, thick, <-] (5,-1.5) -- (5.6,-1.5) node[below, midway, black] {RX};
+    %\draw[orange, thick] (5,1.5) -- (7,1.5) node[above, midway, black, align=left] {Quantum \\channel};
+    %\draw[orange, thick, <-] (5,-1.5) -- (5.6,-1.5) node[below, midway, black] {RX};
 
-    \node[above] at (2,2) {Box};
+    \node[above, vq_blue_dark] at (3,2) {2U Rack mountable enclosure};
 
 
 \end{tikzpicture}
