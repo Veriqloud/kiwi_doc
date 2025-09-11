@@ -6,9 +6,13 @@ There are two networks. One for the client and one for communication between Ali
 
 ![](pics/network.svg)
 
+In standard operation, the admin is on the client network and uses scripts on his local computer to communicate with the devices. These scripts are TCP-clients that connect to servers on the machines and send/receive messages and data.
+
+For development and debugging you can connect through ssh and operate directly on the machines. 
 
 
-## Basic admin controlling a configured system (no ssh to the system requred)
+
+## Standard operation 
 
 Clone repo `git@github.com:Veriqloud/kiwi_hw_control.git`
 

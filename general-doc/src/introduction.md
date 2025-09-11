@@ -1,6 +1,6 @@
 # Introduction
 
-This documentation describes and explains the Quantum Key Distribution system developped by VeriQloud. 
+This documentation describes and explains the Quantum Key Distribution system developped by VeriQloud. This documentation is still under contruction.
 
 [Here is a datasheet](pics/kiwi_datasheet.pdf) of the system.
 
