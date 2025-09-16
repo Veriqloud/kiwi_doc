@@ -4,7 +4,7 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 
 ![overview](pics/tdc.png)	
 ## clk_rst_buffer
-### OLVDS_TDC.v: buffer for differential output signals, clocks
+### tdc_olvds.v: buffer for differential output signals, clocks
 
 |Signals name   |Interface      |Dir |Init status |Description
 |---------------|---------------|----|------------|-----------
@@ -15,7 +15,7 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 |tdc_refclk_n/p |tdc_ext_clkrst |O   |-           |refclk differential pair output  
 |tdc_rstidx_n/p |tdc_ext_clkrst |O   |-           |rsridx differential pair output  
 
-### ILVDS_TDC.v: buffer for differential input signals,clocks
+### tdc_ilvds.v: buffer for differential input signals,clocks
 
 |Signals name   |Interface      |Dir |Init status |Description
 |---------------|---------------|----|------------|-----------
@@ -78,7 +78,8 @@ We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-
 ## system_ila_tdc 
 ILA debug core, probes signals under tdc blocks
 ## tdc_mngt
-### AS6501_IF.v: manages digital data from TDC, output tdc time/global counter/click result depends on axil commands
+### tdc_core.v: 
+Manages digital data from TDC, output tdc time/global counter/click result depends on axil commands.
 
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
@@ -107,7 +108,8 @@ ILA debug core, probes signals under tdc blocks
 |others               |-         |O   |-           |other signals is for debug
 
 
-### TDC_REG_MNGT_v1_0.v: manages axilite registers
+### tdc_reg_mngt.v: 
+Manages axilite registers.
 
 User parameters:
 |Parameter           |Value |Description
@@ -127,7 +129,8 @@ Port descriptions
 |s_axil_aresetn       |Reset     |I   |Active LOW  |reset for axil interface 
 
 
-- fifo_gc_tdc_rtl.v: instantiates fifo_gc_tdc, this fifo is axistream fifo. Instantiate axistream fifo in an RTL module allows to modify FREQ_HZ parameter of axistream interface when rebuild the block design
+### fifo_gc_tdc_rtl.v: 
+Instantiates fifo_gc_tdc, this fifo is axistream fifo. Instantiate axistream fifo in an RTL module allows to modify FREQ_HZ parameter of axistream interface when rebuild the block design.
 
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
@@ -263,7 +266,7 @@ The limit value is in unit of clk200 period
 |mr_data_count_valid_o		    |data_count_valid_i			|I	|-              |signal to tell click count data is valid -->
 
 ### Data flow
-Picture below shows an overview how data flows through modules and xdma channels. Responses to commands are written in modules AS6501_IF.v
+Picture below shows an overview how data flows through modules and xdma channels. Responses to commands are written in modules tdc_core.v
 
 ![tdc data flow](pics/tdc_data_flow.png)
 ### Software control functions

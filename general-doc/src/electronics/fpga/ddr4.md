@@ -368,6 +368,16 @@ List of commands
 
 In step 6, there are some parameters:
 - 1999: define speed of read gc_in fifo. This is for click rate more than 50k and less than 100k
-- the delay and pair parameters need to be verify
-- In server and client, already tried to transmit global counter and write click result to the proper format to fifo -> need to verify with angle format
+- the delay and pair parameters defined from value of returned fiber delay after calibration
+
+calib fiber delay  [q_bins] | pair_mode | fiber_delay 
+----------------------------|-----------|------------
+34| 1 | 17
+35| 0 | 18
+36| 1 | 18
+37| 0 | 19
+- In server and client mechanism, try to START sending gc 
+- Reading alpha from alpha fifo when status of alpha_out_fifo is not empty. Pay attention to alpha out rate to avoid timeout on xdma
+
+For testing single device, run ddr_loop_test.py. Detail is in Hardware Testing Chapter
 

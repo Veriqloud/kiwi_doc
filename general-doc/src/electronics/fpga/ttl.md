@@ -1,5 +1,5 @@
 # TTL gate
-Purpose of this module:
+Purpose of this module: 
 - Generate gate signal for SPD, level TTL 3.3V out of FPGA (level is converted on Bread70 for SPD)
 - Duty cycle > 5ns
 - Delay full range 12.5ns, fine delay in 100ps step

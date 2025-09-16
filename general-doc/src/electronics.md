@@ -26,7 +26,7 @@ Some abbreviations: Pulse Generator (PG), Amplitude Modulator (AM), Single Photo
 
 ## Device driver and Control API
 To complete the PHY layer, it requires a software layer to control the physical hardware. It includes:
-- Device driver: this is the low-level software handles PCIe communication (using XDMA) between PC and FPGA. It operates at OS kernel level and is written by Arm (Xilinx)
+- Device driver: this is the low-level software handles PCIe communication (using XDMA) between PC and FPGA. It operates at OS kernel level and is written by AMD (Xilinx)
 - Control API: this is the high-level software that runs at user level to configure and control the FPGA via the device driver. The user sends commands and data to FPGA from this API
  
 Instructions to install the driver and source code of Control API is available in [kiwi_hw_control](https://github.com/Veriqloud/kiwi_hw_control/tree/master) github repos. Os level documentation is also provided in the User Guide section.
