@@ -4,7 +4,7 @@ Purpose of this module:
 - Duty cycle > 5ns
 - Delay full range 12.5ns, fine delay in 100ps step
 
-![](pics/ttl_gate.png)
+![](pics/ttl_gate.svg)
 
 ## Port descriptions
 

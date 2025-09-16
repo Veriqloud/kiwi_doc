@@ -10,7 +10,7 @@
  - mon_ddr_fifos.v: manages registers to monitor status of AXI Virtual FIFO Controller and axistream fifos
  - fifos_out.v: instantiate axistream output fifos. Instantiate in an RTL module allows Vivado changes FREQ_HZ parameter after rebuild block design from Tcl script 
 
-![ddr4 overview](pics/ddr4_hier.png)
+![ddr4 overview](pics/ddr4_hier.svg)
 
 ## Port descriptions
 ### axi_clock_converter_rtl.v
@@ -256,7 +256,7 @@ Alice sends START command to Bob through Ethernet. They both send the command to
 
 To make sure START command is not close to rising edge of PPS, Alice will request PPS detection from FPGA, she delays at least 10ms (PPS duty cycle) and send START command. Readback global counter on both Alice and Bob, compare to verify the synchronisation
 
-![](waves/ddr4_start.png)
+![](waves/ddr4_start.svg)
 
 #### WRITE MANAGEMENT
 In START state, start to count up double global counter and write angles to DDR4. Angles are written as axistream data to AXI Virtual FIFO controller IP. This IP manages the memory map in the MIG, when you want to write or read from DDR4, you just need to manage write/read axistream of AXI Virtual FIFO controller.
@@ -283,11 +283,11 @@ Each party have to read angles before fifo_alpha_out is full.
 
 This is the picture describes the states in FPGA, the path of data between Alice and Bob.
 
-![ddr4 data flow](pics/ddr4_data_flow.png)
+![ddr4 data flow](pics/ddr4_data_flow.svg)
 
 Details in states COUNTING_*. Currently, Alice second AM is placed after Alice PM so the decoy_fiber_delay is shorter than ab_fiber_delay, we jump to COUNTING_AL first
 
-![ddr4 counting states](pics/ddr4_counting.png)
+![ddr4 counting states](pics/ddr4_counting.svg)
 
 ## Software control functions
 - Ddr_Data_Reg : Set registers

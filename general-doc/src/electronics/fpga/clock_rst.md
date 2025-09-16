@@ -10,7 +10,7 @@ WRS 10 MHz is reference for PLL LTC6951 to generate clock pairs (sysref 3.125 MH
 
 reflck 200 MHz is is the source clock for all logics in fpga, PPS is reference for synchronization       
 
-![clock system](pics/clock_tree.png)
+![clock system](pics/clock_tree.svg)
 
 ## Module RTL
 Purpose of this module:
@@ -18,7 +18,7 @@ Purpose of this module:
 - Generate the resets for other RTL modules
 - Generate SYNC signal for clockchip on board Bread70
 
-![module overview](pics/clk_rst_rtl.png)
+![module overview](pics/clk_rst_rtl.svg)
 
 ### Port descriptions
 |Signals name         |Interface |Dir |Init status |Description

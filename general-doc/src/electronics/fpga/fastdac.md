@@ -4,7 +4,7 @@ We use fast DAC chip AD9152 from Analog Device, converts digital to analog signa
 - DAC0 : output IOUT
 - DAC1 : output QOUT
 
-![fastdac output](pics/fastdac_output.png)
+![fastdac output](pics/fastdac_output.svg)
 
 Kiwi device has qu-bit rate 80MHz, we use time-bin encoded, so DAC0 in Alice generates double pulse at 80MHz, DAC1 also generates signal for PM at the same rate. 
 We calculated the JESD204B parameters before designing the sytem, you can find the parameters in registers we set for the chip. We set:
@@ -35,7 +35,7 @@ fastdac block is splited into 3 layers:
 
 To synchronise the output with PPS, add an extra module to sync_tx_ready to PPS
 
-![fastdac block](pics/fastdac_hier.png)
+![fastdac block](pics/fastdac_hier.svg)
 
 ### Sync_tx_tready
 This module will synchronize tx_tready to PPS to make sure the analog output of the Receiver will be synced
@@ -53,7 +53,7 @@ Generate data to provide for Jesd. There are 2 DACs inside AD9152, so DAC0 in ch
 - Maximum output power for each DAC is 600mV peak-to-peak into 50 Ohm load
 - Sampling rate for each DAC: 800M sample/s, qubit rate = 80 MHz. So you have 10 samples for 1 double pulse period
 
-![pulses](pics/fastdac_pulse.png)
+![pulses](pics/fastdac_pulse.svg)
 #### Signal for AM   
 - qbit is encoded in 5 ns double pulse, pulse rate is 80MHz (12,5ns). Pulse Generator(PG) triggers the rising edge of the DAC0 signal to generate the pulses, so make sure distance between 2 rising edge is 5ns +- 200ps. You can play around with Pulse Generator threshold and DAC0 signal to find the best position for PG trigger 
 #### Signal for PM 
@@ -173,21 +173,21 @@ Address of slv_reg(n) = 0x0003_0000 + 4 * n
 #### Programming note
 dpram_seqs: address range is 4096, maximum you can write 1024 words to each dpram
 
-![dpram seq](pics/fastdac_dpram_seq.png)
+![dpram seq](pics/fastdac_dpram_seq.svg)
 
 dpram_rng: address range is 57344, maximum you can write 14336 words to dpram_rng. For calibration procedure over:
 - 100km optical fiber (0.5ms), you need a sequence of 20000 dpram_rng [3:0], means 2500 axil words
 - 10km optical fiber, you need 2000 dpram_rng[3:0], means 250 axil words
 
-![dpram rng](pics/fastdac_dpram_rng.png)
+![dpram rng](pics/fastdac_dpram_rng.svg)
 
 fifos_rng: SwiftRro RNG output data rate around 200Mb/s, we read fifo in fpga at 160Mb/s. 
 
-![fifos rng](pics/fastdac_fifo_rng.png)
+![fifos rng](pics/fastdac_fifo_rng.svg)
 
 There are several MUXs, simply choosing different modes for calibration purpose. When running the protocol, turn on all modes to 1
 
-![select](pics/fastdac_select.png)
+![select](pics/fastdac_select.svg)
 
 You have these 3 functions in software control to send data and write registers in jesd transport layer
 

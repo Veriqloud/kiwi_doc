@@ -10,7 +10,7 @@ XDMA block use "DMA for PCI Express (PCIe) Subsystem" IP supported by AMD. You c
 The picture below shows the actual number of channel and purpose of each channel
 
 
-![XDMA channels](pics/xdma.png) 
+![XDMA channels](pics/xdma.svg) 
 
 From Axil of XDMA, connect with AXI Interconnect IP to divide address space for sub-modules. Changing the size of address space depends on the number of registers need to be written through Axil to Axil of sub-modules. You can check the Axil address distribution in block design or in the table below:
 

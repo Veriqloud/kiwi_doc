@@ -2,7 +2,7 @@
 
 We use AS6501 TDC(Time to Digital Converter) chip to convert arriving time of q-bit to digital data. All modules and IP manage in/out signals from TDC are grouped under block tdc:
 
-![overview](pics/tdc.png)	
+![overview](pics/tdc.svg)	
 ## clk_rst_buffer
 ### tdc_olvds.v: buffer for differential output signals, clocks
 
@@ -268,7 +268,7 @@ The limit value is in unit of clk200 period
 ### Data flow
 Picture below shows an overview how data flows through modules and xdma channels. Responses to commands are written in modules tdc_core.v
 
-![tdc data flow](pics/tdc_data_flow.png)
+![tdc data flow](pics/tdc_data_flow.svg)
 ### Software control functions
 Setting registers used in state machine under clk200
 ```python,hidelines=~

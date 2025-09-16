@@ -20,6 +20,6 @@ To generate random number for QKD, we use SwiftRNG Pro from TectroLabs. [Documen
 
 Picture below show you the path of random bytes. We have a small API sends "x" command to SwiftRNG Pro, the device returns 16000 bytes of random data. Then data is sent through PCIe to FPGA using axistream protocol, jesd_transport.v manages to read data from axistream fifo fifo_128x16
 
-![rng data flow](pics/rng_flow.png)
+![rng data flow](pics/rng_flow.svg)
 
 On Alice, we're going to use the second tRNG device to generate the signal for the second AM. Data flow is the same as above but the destination is module decoy.v

@@ -4,7 +4,7 @@ Purpose of this module:
 - Level is 0 or 1, apply randomly on qbit(12,5ns)
 - Source of RNG is from second tRNG SwiftPro RNG
 
-![](pics/decoy_signal.png)
+![](pics/decoy_signal.svg)
 
 ## decoy_rng_fifos.v
 ### Port descriptions
@@ -160,7 +160,7 @@ def Test_Decoy():
 ~    Write(0x00016000 , 0x0)
 ~    Write(0x00016000 , 0x1)
 ```
- ![](pics/decoy_fifos.png)
+ ![](pics/decoy_fifos.svg)
 
 ## Delays
 
