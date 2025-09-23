@@ -3,7 +3,7 @@ authors = []
 language = "en"
 multilingual = false
 src = "src"
-title = "Kiwi QKD Documentation"
+title = "Veriqloud QKD documentation v1.0"
 [output.html]
 mathjax-support = true
 

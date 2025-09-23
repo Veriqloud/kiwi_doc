@@ -21,13 +21,12 @@
 	- [WRS, Computer, tRNG](electronics/wrs_pc_rng.md)
 - [Box and assembly](box.md)
 - [Hardware Testing](hardware-testing.md)
-- [Calibration](calibration.md)
-- [Post Processing](post_processing.md)
 
 # User Guide
 
 - [Files and Scripts](files_and_scripts.md)
 - [Running the System](running_the_system.md)
+- [Calibration](calibration.md)
 
 # QKD basics
 

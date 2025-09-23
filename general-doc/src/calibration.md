@@ -1,5 +1,6 @@
 # Calibration
 
+In standard operation, all calibration steps are performed automatically. 
 
 When the system is turned on, we start with some default parameters (from config/defaults.txt). Some of them will be fine straight away but some might need to be updated. Generally, we are going to run some scripts controlled by `client_ctl.py` on Alice to find correct parameters. The general steps are the following:
 
