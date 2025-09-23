@@ -19,6 +19,7 @@
 		- [SPI](electronics/fpga/spi.md)
 		- [ILA debug](electronics/fpga/ila.md)
 	- [WRS, Computer, tRNG](electronics/wrs_pc_rng.md)
+- [Box and assembly](box.md)
 - [Hardware Testing](hardware-testing.md)
 - [Calibration](calibration.md)
 - [Post Processing](post_processing.md)
