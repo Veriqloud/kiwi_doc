@@ -31,16 +31,16 @@ Coprapagation of the classical and the quantum signal on the same network inevit
 
 ![](pics/overview.svg)
 
-This is an overview of the logical levels. This architecture involves four layers (the physical hardware layer (PHY), the QKD Network Layer (Node), the key management service layer (KMS), the application layer). Each layer can be modified independently of the other ones for more flexibility. 
+This is an overview of the logical levels. This architecture involves four layers (the physical hardware layer (PHY), the QKD Network Layer (here called Node), the key management service layer (KMS), the application layer (APP). Each layer can be modified independently of the other ones for more flexibility. 
 
 - The application layer consists of user devices and applications, which make key requests to the Key Management Service (KMS) layer. These devices and applications use these keys to encrypt data in a secure way. 
 - The KMS layer obtains keys from the quantum network layer and distributes the keys to their designated hosts in  the application layer. The KMS layer must ensure the integrity and confidentiality of the keys.
-- The Quantum Network Layer (Node): executes all the post-processing steps on the keys produced from the physical layer to get final secure keys. It coordinates key routing between nodes and provides the keys directly to the KMS layer. 
+- The Quantum Network Layer: executes all the post-processing steps on the keys produced from the physical layer to get final secure keys. It coordinates key routing between nodes and provides the keys directly to the KMS layer. The Veriqloud software doing these tasks is called Node.
 - The physical hardware layer (PHY) consists of the quantum channel and physical QKD hardware devices. These devices are responsable for generating the keys. After a key is produced, it is passed to Node where it is processed as described above. The PHY layer and Node share data through PCIe. 
 
 We make the physical hardware layer as well as Node open source. The KMS and applications remain closed source. 
 
-## Post processing (done by Node)
+## Post processing
 
 For the BB84 protocol without decoy states, there are three steps to process the raw key into the final key:
 

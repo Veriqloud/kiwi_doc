@@ -4,7 +4,7 @@
 ![](pics/photo_alice_bob_cut.png)
 
 This documentation describes and explains the Quantum Key Distribution system developped by VeriQloud. 
-This documentation is still under contruction.
+This documentation is still under construction.
 
 
 [Here is a datasheet](pics/kiwi_datasheet.pdf) of the system.
