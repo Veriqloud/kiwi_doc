@@ -17,7 +17,8 @@
 This module instantiates AXI Clock Converter IP of Xilinx. Post description is in Xilinx datasheet.
 
 ### axi_virtual_controller_wrapper.v
-This module instantiates AXI virtual Fifo Controller IP of Xilinx. Post description is in Xilinx datasheet.There are 3 optional ports for monitoring
+This module instantiates AXI virtual Fifo Controller IP of Xilinx. Post description is in Xilinx datasheet.There are 3 optional ports for monitoring.
+
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
 |counter_read[47:0]   |-         |O   |-           |number of read out of DDR AXI 
