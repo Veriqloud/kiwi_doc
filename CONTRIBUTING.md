@@ -18,3 +18,4 @@ Thank you for your interest in contributing to this project! Your contributions 
 ## Community
 - Be respectful, inclusive, and constructive.
 - Follow our [Code of conduct](CODE_OF_CONDUCT.md).
+- Consult the [Gorcernance](GOVERNANCE.md) to understand community roles.
