@@ -7,3 +7,7 @@ to run locally, [install mdbook](https://rust-lang.github.io/mdBook/guide/instal
 mdbook serve --open
 ```
 
+Contributing
+------------
+
+Please check out our [contributing guide](CONTRIBUTING.md) if you're interested in contributing.
