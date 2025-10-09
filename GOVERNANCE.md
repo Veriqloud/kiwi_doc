@@ -4,7 +4,7 @@ This document explains how the QLINE project works.
 
 ## Community Roles
 
-* **Users**: Members that engage with the K3s community via any medium (GitHub, emails etc.).
+* **Users**: Members that engage with the community via any medium (GitHub, emails etc.).
 
 * **Contributors**: Regular contributions to projects (documentation, code reviews, responding to issues, participation in proposal discussions, contributing code, etc.). 
 
