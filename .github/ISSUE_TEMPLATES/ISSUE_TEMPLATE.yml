@@ -1,0 +1,40 @@
+name: Documentation Issue
+description: Report an issue with the documentation
+title: "[Doc] "
+labels: [ "documentation" ]
+body:
+- type: textarea
+  id: description
+  attributes:
+    label: Description
+    description: A clear and concise description of the issue or suggestion.
+  validations:
+    required: true
+
+- type: checkboxes
+  id: issue-type
+  attributes:
+    label: Type of Issue
+    options:
+    - label: Error in existing documentation
+    - label: Missing documentation
+    - label: Suggested improvement
+    - label: Other (describe below)
+
+- type: input
+  id: location
+  attributes:
+    label: Location
+    description: Specify the page or section (if applicable).
+
+- type: textarea
+  id: suggested-solution
+  attributes:
+    label: Suggested Solution
+    description: Describe your proposed changes or additions.
+
+- type: textarea
+  id: additional-context
+  attributes:
+    label: Additional Context
+    description: Any other relevant information (e.g., screenshots, references).
