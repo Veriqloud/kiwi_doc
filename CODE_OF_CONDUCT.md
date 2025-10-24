@@ -38,7 +38,7 @@ Project leaders have the right and responsibility to remove, edit, or reject com
 This Code of Conduct applies within all projects and community spaces, and also applies when an individual is officially representing the community in public or other spaces. Examples of representing our community include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event.
 
 ## Enforcement
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project leaders responsible for enforcement at [INSERT CONTACT EMAIL OR FORM]. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project leaders (maintainers) responsible for enforcement. All complaints will be reviewed and investigated promptly and fairly.
 
 Project leaders are obligated to respect the privacy and security of the reporter of any incident.
 
