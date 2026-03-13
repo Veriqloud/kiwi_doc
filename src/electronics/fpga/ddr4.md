@@ -313,9 +313,9 @@ def Ddr_Status():
 ~        fifos_status = Read(0x00001000 + 56)
 ~        hex_ddr_fifos_status = ddr_fifos_status.decode('utf-8').strip()
 ~        hex_fifos_status = fifos_status.decode('utf-8').strip()
-~        vfifo_idle = (int(hex_ddr_fifos_status,16) & 0x180)>>7
-~        vfifo_empty = (int(hex_ddr_fifos_status,16) & 0x60)>>5
-~        vfifo_full = (int(hex_ddr_fifos_status,16) & 0x18)>>3
+~        vfifo_idle = (int(hex_ddr_fifos_status,16) & 0x600)>>9
+~        vfifo_empty = (int(hex_ddr_fifos_status,16) & 0x180)>>7
+~        vfifo_full = (int(hex_ddr_fifos_status,16) & 0x60)>>5
 ~        gc_out_full = (int(hex_ddr_fifos_status,16) & 0x4)>>2
 ~        gc_in_empty = (int(hex_ddr_fifos_status,16) & 0x2)>>1
 ~        alpha_out_full = int(hex_ddr_fifos_status,16) & 0x1
