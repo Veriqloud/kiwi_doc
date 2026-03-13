@@ -2,6 +2,7 @@
  Purpose of DDR4: when you get the click event on detection, you need to find the angle applied to that qubit (basis information). DDR4 is used to store the angle so that after getting click event, base on value of global counter, you can find the angle. One other reason is that we have constraints over 100km distance between Alice and Bob, the delay on classical channel, so DDR4 is large enough to satisfy these constraints.
  Below is the overview pictures of modules and IPs in FPGA manage the data flow in DDR4:
  - IP DDR4: MIG IP supported by AMD. The core allow you interface directly with the physical Memory. To configure the MIG, follow instructions on opalkelly [DDR4 Memory](https://docs.opalkelly.com/xem8310/ddr4-memory/)
+ - axis_burst.v : instantiate axistream packet FIFO. This FIFO convert single beat stream to packet stream, make sure packet size equals to burst size of AXI Virtual FIFO      
  - axi_virtual_controller_wrapper.v : use AXI Virtual FIFO Controller core from AMD to access DRAM memory as multiple FIFO blocks
  - axi_clock_converter_rlt.v use AXI Clock Converter core from AMD as interconnect, change clock domain, because AXI interface on MIG uses 300MHz clock domain
  - system_ila_ddr: monitoring AXI, AXIS interface and debug signals
@@ -14,7 +15,10 @@
 
 ## Port descriptions
 ### axi_clock_converter_rtl.v
-This module instantiates AXI Clock Converter IP of Xilinx. Post description is in Xilinx datasheet.
+This module instantiates AXI Clock Converter IP of Xilinx. Port description is in Xilinx datasheet.
+
+### axis_burst.v
+This module instantiates AXIStream packet FIFO. Port description is in Xilinx datasheet.
 
 ### axi_virtual_controller_wrapper.v
 This module instantiates AXI virtual Fifo Controller IP of Xilinx. Post description is in Xilinx datasheet.There are 3 optional ports for monitoring.
@@ -24,6 +28,8 @@ This module instantiates AXI virtual Fifo Controller IP of Xilinx. Post descript
 |counter_read[47:0]   |-         |O   |-           |number of read out of DDR AXI 
 |counter_write[47:0]  |-         |O   |-           |number of write in of DDR AXI 
 |delta_count[47:0]    |-         |O   |-           |number of write - number of read 
+|delta_addr[31:0]     |-         |O   |-           |addr write  - addr read 
+|mismatch_addr[31:0]  |-         |O   |-           |detect mismatch of delta_count and delta_addr
 
 ### ddr4
 This is IP of Xilinx. All information is in Xilinx datasheet
@@ -77,7 +83,7 @@ This is IP of Xilinx. All information is in Xilinx datasheet
 |s_axil_aclk          |Clock     |I   |15MHz       |clock for axil interface 
 |s_axil_aresetn       |Reset     |I   |-           |reset for axil interface, active LOW
 |pps_i                |-         |I   |-           |PPS from WRS for Alice capturing
-|ddr_fifos_status_i[8:0]|-       |I   |-           |status of Virtual FIFO
+|ddr_fifos_status_i[10:0]|-      |I   |-           |status of Virtual FIFO and other fifos n clk200 domain
 |status_200_valid_i     |-       |I   |-           |valid indicator of VFIFO status
 |fifos_status_i[2:0]    |-       |I   |-           |status of fifos in clk250 domain
 |status_250_valid_i     |-       |I   |-           |valid indicator of status in clk250 
@@ -99,7 +105,7 @@ This is IP of Xilinx. All information is in Xilinx datasheet
 |gc_in_fifo_empty     |-         |I   |-           |empty flag of gc_in fifo
 |alpha_out_fifo_full  |-         |I   |-           |full flag of alpha_out fifo
 |alpha_out_fifo_empty |-         |I   |-           |empty flag of alpha_out fifo
-|status_200_o[8:0]    |-         |O   |-           |status of flags in clk200 dmain
+|status_200_o[10:0]   |-         |O   |-           |status of flags in clk200 dmain
 |status_200_valid_o   |-         |O   |-           |indicator valid of status_200
 |status_250_o[2:0]    |-         |O   |-           |status of flags in clk250 dmain
 |status_250_valid_o   |-         |O   |-           |indicator valid of status_250
@@ -197,10 +203,10 @@ This module instantiates 2 fifos: gc_out fifo and alpha fifo in AXIStream mode o
 ### slv_reg13 - R Access - Monitoring
 |Bits|Signal name        |HW Wire          |Action/Value|Description
 |----|-------------------|-----------------|------------|-----------
-|31:9|-                  |-                |-           |Reserved 0
-|8:7|ddr_fifos_status_i   |vfifo_idle      |-           |idle flags of axi virtual fifo
-|6:5|ddr_fifos_status_i   |vfifo_full      |-           |full flags of axi virtual fifo
-|4:3|ddr_fifos_status_i   |vfifo_empty     |-           |empty flags of axi virtual fifo
+|31:11|-                 |-                |-           |Reserved 0
+|10:9|ddr_fifos_status_i  |vfifo_idle      |-           |idle flags of axi virtual fifo
+|8:7|ddr_fifos_status_i   |vfifo_full      |-           |full flags of axi virtual fifo
+|6:5|ddr_fifos_status_i   |vfifo_empty     |-           |empty flags of axi virtual fifo
 |2|ddr_fifos_status_i   |gc_out_fifo_full   |-           |full flag of gc_out fifo
 |1|ddr_fifos_status_i   |gc_in_fifo_empty   |-           |empty flag of gc_in fifo
 |0|ddr_fifos_status_i   |alpha_out_fifo_full|-           |full flag of alpha_out fifo
@@ -223,31 +229,6 @@ This module instantiates 2 fifos: gc_out fifo and alpha fifo in AXIStream mode o
 |----|-------------------|-----------------|------------|-----------
 |31:16|-                 |-                |-           |Reserved 0
 |15:0|current_dq_gc_msb_i   |current_dq_gc_msb_i   |-           |monitors the MSB of current dq
-
-
-<!-- |axil registers	|Dir|Signal                 | Description
-|---------------|---|-----------------------|--------------------------------------------------
-|slv_reg0[0]	|O 	|start_write_ddr_o		|set this 0 to 1 to start write to ddr at next pps
-|slv_reg1[0]	|O 	|command_enable_o		|set this 0 to 1 to get current dq
-|slv_reg2[2:0]	|O 	|command_o			|set command to read_angle mode or reset alpha_out fifo
-|slv_reg2[3]	|O 	|command_gc_o			|unused
-|slv_reg3[0]	|O 	|reg_enable_o			|set this 0 to 1 to load others regs
-|slv_reg4[31:0]	|O 	|dq_gc_start_lsb_o		|set the LSB of current dq
-|slv_reg5[15:0]	|O 	|dq_gc_start_msb_o		|set the MSB of current dq
-|slv_reg6[0]	|O 	|command_alpha_enable_o	|set this 0 to 1 to reset alpha_out fifo and start save alpha
-|slv_reg6[1]	|O 	|pair_delay_o			|define if fiber delay [gc] % dq_gc = 0 or 1, for PM
-|slv_reg6[2]	|O 	|de_pair_delay_o		|define if fiber delay [gc] % dq_gc = 0 or 1, for 2nd AM
-|slv_reg7[0]	|O 	|command_gc_enable_o	|set this 0 to 1 to reset gc_out fifo and get data 
-|slv_reg8[31:0]	|O 	|threshold_o			|number of clk200, define reading speed of gc_in fifo
-|slv_reg9[31:0]	|O 	|threshold_full_o		|unused(used to debug size of ddr4)
-|slv_reg10[15:0]|O 	|fiber_delay_o			|set bob/alice_bob fiber delay [gc] (on Bob/Alice) found in calibration for PM,for reading angle out of DDR
-|slv_reg10[31:16]|O |de_fiber_delay_o		|set alice_bob fiber delay [gc](only on Alice) found in calibration for 2nd AM, for reading angle out of DDR
-|slv_reg11[15:0]|O 	|ab_fiber_delay_o		|set alice_bob fiber delay [gc](only on Bob) found in calibration, to start output the gc+result
-|slv_reg12[0]   |I 	|pps_sync       		|monitor PPS so that Alice can capture to send START command
-|slv_reg13[8:0] |I 	|ddr_fifos_status_i		|includes idle, empty and full flags of virtual fifo controller
-|slv_reg14[2:0] |I 	|fifos_status_i			|includes full and empty flags of gc_out, alpha_out, gc_in fifos
-|slv_reg15[31:0]|I 	|current_dq_gc_lsb_i	|monitors the LSB of current dq 
-|slv_reg16[16:0]|I 	|current_dq_gc_msb_i	|monitors the MSB of current dq -->
 
 
 ## Data flow
