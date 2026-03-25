@@ -2,8 +2,8 @@ This note is for developper
 
 # Realease 25th Mars 2026
 
-- Using register to reset fifo_128x16 and fifo_decoy_rng_128x16
-- Monitoring almost_full and empty flags of these 2 fifos
+- Using register to reset fifo_128x16,fifo_16x4 and fifo_decoy_rng_128x16,fifo_decoy_rng_16x2
+- Monitoring almost_full and empty flags of only fifo_128x16 and fifo_decoy_rng_128x16
 
 ## Reset
 - Reset HIGH
