@@ -19,6 +19,7 @@
 		- [SPI](electronics/fpga/spi.md)
 		- [ILA debug](electronics/fpga/ila.md)
 		- [FGPA Reports](electronics/fpga/reports.md)
+        - [Software note](electronics/fpga/soft_instruction.md)
 	- [WRS, Computer, tRNG](electronics/wrs_pc_rng.md)
 - [Box and assembly](box.md)
 - [Hardware Testing](hardware-testing.md)
