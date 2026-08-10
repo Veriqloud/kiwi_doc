@@ -181,9 +181,9 @@ dpram_rng: address range is 57344, maximum you can write 14336 words to dpram_rn
 
 ![dpram rng](pics/fastdac_dpram_rng.svg)
 
-fifos_rng: SwiftRro RNG output data rate around 200Mb/s, we read fifo in fpga at 160Mb/s. 
+fifos_rng: SwiftRro RNG output data rate around 200Mb/s.
+Read chapter True RNG for more detail of true rng input and rng monitoring        
 
-![fifos rng](pics/fastdac_fifo_rng.svg)
 
 There are several MUXs, simply choosing different modes for calibration purpose. When running the protocol, turn on all modes to 1
 

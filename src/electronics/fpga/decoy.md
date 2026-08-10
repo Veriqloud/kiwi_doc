@@ -16,12 +16,17 @@ Purpose of this module:
 |s_axis_clk           |Clock     |I   |250MHz      |Clock of axistream
 |s_axis_tresetn       |Reset     |I   |-           |Reset of axistream, active LOW
 |clk200               |Clock     |I   |200MHz      |Clock for logic
-|tx_core_rst          |Reset     |I   |-           |Using same reset with rng fifos in fastdac
-|rd_en_16             |-         |I   |-           |Enable signal at 10MHz, in clk200 domain
+|clk80               |Clock     |I   |200MHz      |Clock for logic
+|rst_clk80          |Reset     |I   |-           |reset rng in domain 80MHz
+|rst_clk250          |Reset     |I   |-           |reset rng in domain 250MHz
+|rd_en_16_de             |-         |I   |-           |unused
 |rd_en_4              |-         |I   |-           |Enable signal at 40MHz, in clk200 domain
-|de_rng_dout[3:0]     |-         |O   |-           |tRNG output at 40MHz
+|de_rng_dout2[1:0]     |-         |O   |-           |rng output at 40MHz
+|de_rng_flags[3:0]     |-         |O   |-           |flags to monitor error in rng relevant modules
+|de_err_ctrl_underrun     |-         |O   |-           |sticky error flags for rng underrun 
 
-
+## rangedec_top_wrapper.v
+Return to chapter True RNG
 ## decoy.v
 ### Port descriptions
 

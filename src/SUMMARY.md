@@ -17,10 +17,11 @@
 		- [TTL gate](electronics/fpga/ttl.md)
 		- [Decoy signal](electronics/fpga/decoy.md)
 		- [SPI](electronics/fpga/spi.md)
+		- [True RNG](electronics/fpga/trng.md)
 		- [ILA debug](electronics/fpga/ila.md)
 		- [FGPA Reports](electronics/fpga/reports.md)
         - [Software note](electronics/fpga/soft_instruction.md)
-	- [WRS, Computer, tRNG](electronics/wrs_pc_rng.md)
+	- [WRS, Computer](electronics/wrs_pc.md)
 - [Box and assembly](box.md)
 - [Hardware Testing](hardware-testing.md)
 

@@ -1,0 +1,17 @@
+# WRS, Computer
+## WRS
+- Version [White Rabbit Switch v3.4](https://safran-navigation-timing.com/product/white-rabbit-switch-v3-4/)
+- Port connections : ??? 
+
+## Customized computer
+Customized computer from [Sedatech](https://www.sedatech.net/)
+- Processor:  Intel i7-14700T
+- RAM: 16Gb DDR5-5200
+- Graphic card: Intel UHD Graphics 770
+- Mother board: Asrock Z790M-ITX/Wifi
+- SSD: 500Go NVMe
+- Aircooling: Jonsbo HX4170D
+- Power supply: 150W External power supply
+
+Instruction to deploy the computer is available on GitHub [kiwi_hw_control](https://github.com/Veriqloud/kiwi_hw_control.git)
+

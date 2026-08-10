@@ -52,6 +52,9 @@ Purpose of this module:
 |decoy_rst            |Reset     |O   |-           |Reset for decoy module
 |gc_rst_o             |Reset     |O   |-           |Reset for tdc module in clk200 domain
 |ddr_data_rstn_o      |Reset     |O   |-           |Reset for ddr_data module
+|rng_rst_clk200_o     |Reset     |O   |-           |Reset in domain 200MHz for rng relevant modules
+|rng_rst_clk80_o     |Reset     |O   |-           |Reset in domain 80MHz for rng relevant modules
+|rng_rst_clk250_o     |Reset     |O   |-           |Reset in domain 250MHz for rng relevant modules
 
 ### User parameters
 |Parameter           |Value     |Description
@@ -106,12 +109,18 @@ Purpose of this module:
 |31:1|-              |-                |-           |Reserved 0
 |0   |ltc_sync_rst_o	|ltc_sync_rst     |Pull HIGH to LOW|Reset decoy module, active HIGH
 
+#### slv_reg7 - R/W Access - Trigger Control
+|Bits|Signal name    |HW Wire          |Action/Value|Description
+|----|---------------|-----------------|------------|-----------
+|31:1|-              |-                |-           |Reserved 0
+|0   |rng_rst_o	|rng_rst     |Pull HIGH to LOW|Reset rng relevant modules, active HIGH
+
 ### Generate SYNC signal for clockchip
 After receiving sync trigger command from OS, FPGA detects rising edge of PPS and start counting to generate a 2ms pulse for clockchip (minimum is 1ms). Order of commands:
 - Initialize clock chip : writing configuration registers
 - Reset the sync counter
 - Send the sync trigger
 - FGPA should return the SYNC pulse for clock chip, the outputs of clock chip should be aligned to reference clock
-- Each time there'a any change in configuration registers, new parameters is applied after SYNC
+- Each time there's any change in configuration registers, new parameters is applied after SYNC
 
 Note: This SYNC is different with SYNC on DDR
