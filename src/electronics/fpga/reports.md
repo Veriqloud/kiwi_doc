@@ -1,20 +1,20 @@
 # Reports
-From Vivado project, you can generate reports of design in detail. This text shows a summary of resource utilization and power consumption only, in case using ILA and not using ILA.
+From Vivado project, you can generate reports of design in detail. This text shows a summary of resource utilization and power consumption and CDC
 
 - Not using ILAs, the design saves a lot of resources(LUT, LUTRAM, FF and BRAM). So, the bitstream running on device will not include ILAs. For developper want to debug, keep it is useful.
-- Either using ILAs or not, power consumption doesn't improve much, power confidence level is low. Currently it's not priority but possible to improve
 
-## Report utilization summary
-+ Design includes ILAs
+- Update reports pictures
 
-![](pics/report_util.svg)
-+ Design without ILAs
+## Resource utilization
+- Note on resource utilization : The BRAM utilization is mostly full after using more FIFOs for true RNG data path. There are 2 cases could be optimized:
+    - Could reduces size of FIFOs in this data paths but have to be careful to avoid underfow of data. 
+    - Second option is reduce size of gc_fifo_in , this FIFO was upsized for debuging DDR4 Virtual FIFO empty, error was fixed by writing data in BURST to Virtual FIFO to regulate the traffic, the size of fifo_gc_in is not criminal because this fifo is read very fast, level of fifo should be close to empty. Care should be consider with the data written in BURST to fifo_gc_in, avoid making fifo_gc_in full because losed data could make mismatch angles between Alice and Bob
 
-![](pics/report_util_ndbg.svg)
-## Report power summary
-+ Design includes ILAs
+## CDC
 
-![](pics/report_pw.svg)
-+ Design without ILAs
+There are some CDC critial warnings need to explain why could be ignored
 
-![](pics/report_pw_ndbg.svg)
+## Constraints
+
+Explain the constraints in XDC
+

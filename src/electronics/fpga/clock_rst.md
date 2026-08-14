@@ -21,6 +21,8 @@ Purpose of this module:
 ![module overview](pics/clk_rst_rtl.svg)
 
 ### Port descriptions
+![ports](pics/clk_rst_mngt_ports.svg)
+
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
 |fastdac_refclki_p/n  |cr_ext_cr |I   |200MHz      |input of jesd refclk from clockchip 

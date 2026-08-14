@@ -49,6 +49,8 @@ This module will synchronize tx_tready to PPS to make sure the analog output of 
 |tx_tready_o          |          |O   |-           |tx_tready synced to PPS
 
 ### Jesd transport
+![Diagram](pics/jesd_transport.svg)
+
 Generate data to provide for Jesd. There are 2 DACs inside AD9152, so DAC0 in charge of signal for AM, DAC1 in charge of signal for PM. 
 - Maximum output power for each DAC is 600mV peak-to-peak into 50 Ohm load
 - Sampling rate for each DAC: 800M sample/s, qubit rate = 80 MHz. So you have 10 samples for 1 double pulse period

@@ -1,4 +1,4 @@
-This note is for developper 
+This note includes the tests of added fucntions after releases. 
 
 # Realease 25th Mars 2026
 
