@@ -18,3 +18,15 @@ There are some CDC critial warnings need to explain why could be ignored
 
 Explain the constraints in XDC
 
+## Open issues
+### Clocks and resets
+- On the jesd
+    - Both FPGA and DAC requires REFCLK (200MHz) and SYSREF(3.125MHz) for subclass 1 of JESD204B protocol. With strict requirements about t_setup and t_hold for clock pairs.
+    - We have clockchip generates these clock pairs, sync to 1 reference input. However the skew between clock varies between device.
+    - Also when changing FPGA bitstream, the skew also depends on the routing path on FPGA Because of this skew, if we don't delay the clock to meet the setup and hold timing requirement, the device won't get deterministic latency.
+    - The resolution of delay step in clockchip is big ~650ps, timing requirement for jesd is ~200ps . To get DL, also need a little luck
+    - Solution : this can be fixed by length matching technique in PCB routing
+- Clock chip
+    - Need to replace because of life cylce ended
+
+

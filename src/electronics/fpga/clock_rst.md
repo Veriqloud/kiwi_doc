@@ -67,6 +67,8 @@ Purpose of this module:
 ### Axilite registers:
 - Base Address: 0x0001_2000
 - Offset address slv_reg(n) : 4*n
+- Module : clk_rst_axil_mngt.v manages the axil protocol
+
 #### slv_reg0 - R/W Access - Trigger Control
 |Bits|Signal name             |HW Wire       |Action/Value|Description
 |----|------------------------|--------------|------------|-----------
@@ -122,7 +124,7 @@ After receiving sync trigger command from OS, FPGA detects rising edge of PPS an
 - Initialize clock chip : writing configuration registers
 - Reset the sync counter
 - Send the sync trigger
-- FGPA should return the SYNC pulse for clock chip, the outputs of clock chip should be aligned to reference clock
+- FPGA should return the SYNC pulse for clock chip, the outputs of clock chip should be aligned to reference clock
 - Each time there's any change in configuration registers, new parameters is applied after SYNC
 
 Note: This SYNC is different with SYNC on DDR

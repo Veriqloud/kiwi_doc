@@ -33,24 +33,10 @@ fastdac block is splited into 3 layers:
 - jesd: module jesd204b_tx_wrapper.v
 - jesd phy: IP jesd204 phy
 
-To synchronise the output with PPS, add an extra module to sync_tx_ready to PPS
 
 ![fastdac block](pics/fastdac_hier.svg)
 
-### Sync_tx_tready
-This module will synchronize tx_tready to PPS to make sure the analog output of the Receiver will be synced
-#### Port descriptions
-|Signals name         |Interface |Dir |Init status |Description
-|---------------------|----------|----|------------|-----------
-|pps_i                |-         |I   |-           |PPS from WRS
-|tx_core_clk          |Clock     |I   |200MHz      |clock for logic
-|tx_core_rst          |Reset     |I   |-           |reset for jesd tx core
-|tx_tready            |          |I   |-           |signal from jesd, ready to send data
-|tx_tready_o          |          |O   |-           |tx_tready synced to PPS
-
 ### Jesd transport
-![Diagram](pics/jesd_transport.svg)
-
 Generate data to provide for Jesd. There are 2 DACs inside AD9152, so DAC0 in charge of signal for AM, DAC1 in charge of signal for PM. 
 - Maximum output power for each DAC is 600mV peak-to-peak into 50 Ohm load
 - Sampling rate for each DAC: 800M sample/s, qubit rate = 80 MHz. So you have 10 samples for 1 double pulse period
@@ -67,6 +53,9 @@ Generate data to provide for Jesd. There are 2 DACs inside AD9152, so DAC0 in ch
 - Signal can be shifted 10 steps, 1,25ns each step
 
 #### Port descriptions
+
+![ports](pics/jesd_transport.svg)
+
 |Signals name         |Interface |Dir |Init status |Description
 |---------------------|----------|----|------------|-----------
 |axil signals         |s_axil    |IO  |-           |standard axilite interface for r/w registers 
@@ -94,6 +83,18 @@ Generate data to provide for Jesd. There are 2 DACs inside AD9152, so DAC0 in ch
 |--------------------|----------|------------
 |C_S_Axil_Addr_Width |16        |Address width of axil interface
 |C_S_Axil_Data_Width |32        |Address width of axil interface
+
+#### Sync_tx_tready
+This module will synchronize tx_tready to PPS to make sure the analog output of the Receiver will be synced
+##### Port descriptions
+|Signals name         |Interface |Dir |Init status |Description
+|---------------------|----------|----|------------|-----------
+|pps_i                |-         |I   |-           |PPS from WRS
+|tx_core_clk          |Clock     |I   |200MHz      |clock for logic
+|tx_core_rst          |Reset     |I   |-           |reset for jesd tx core
+|tx_tready            |          |I   |-           |signal from jesd, ready to send data
+|tx_tready_o          |          |O   |-           |tx_tready synced to PPS
+
 
 #### Axil registers 
 From the Axil address distribution table, module target jesd_transport takes 64K from offset 0x0003_0000
